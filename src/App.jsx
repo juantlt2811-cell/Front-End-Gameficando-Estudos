@@ -2,6 +2,7 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { ContadorAtividades } from "./ContadorAtividades";
 import { ListaMaterias } from "./ListaMaterias";
+import { Formulario } from "./Formulario";
 
 function App() {
   const [materias, setMaterias] = useState([]);
@@ -40,7 +41,7 @@ function App() {
         Concluir atividade
       </button>
 
-      <input value={nome} onChange={(e) => setNome(e.target.value)} />
+      <Formulario onEnviar={(nomeDigitado) => setNome(nomeDigitado)} />
       <p>Nome digitado: {nome}</p>
       <ContadorAtividades total={atividadesFeitas} />
       {carregando && <p>Carregando matérias...</p>}
