@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Sobre } from "./pages/Sobre";
 import { Materia } from "./pages/Materia";
@@ -18,97 +18,91 @@ import { Materias } from "./pages/Materias";
 function App() {
   return (
     <AuthProvider>
-      <div>
-        <nav>
-          <Link to="/">Início</Link>
-          <Link to="/sobre">Sobre</Link>
-        </nav>
-        <Routes>
-          <Route path="/cadastro" element={<Cadastro />} />
-          <Route
-            path="/"
-            element={
-              <RotaProtegida>
-                <Home />
-              </RotaProtegida>
-            }
-          />
-          <Route
-            path="/perfil"
-            element={
-              <RotaProtegida>
-                <Perfil />
-              </RotaProtegida>
-            }
-          />
-          <Route path="/sobre" element={<Sobre />} />
-          <Route
-            path="/materias/:id"
-            element={
-              <RotaProtegida>
-                <Materia />
-              </RotaProtegida>
-            }
-          />
-          <Route
-            path="/minhas-materias"
-            element={
-              <RotaProtegida>
-                <MinhasMaterias />
-              </RotaProtegida>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/materias/:id/fontes"
-            element={
-              <RotaProtegida>
-                <CaixaFontes />
-              </RotaProtegida>
-            }
-          />
-          <Route
-            path="/materias/:id/atividades"
-            element={
-              <RotaProtegida>
-                <AtividadesMateria />
-              </RotaProtegida>
-            }
-          />
-          <Route
-            path="/materias/:id/praticar"
-            element={
-              <RotaProtegida>
-                <SessaoPratica />
-              </RotaProtegida>
-            }
-          />
-          <Route
-            path="/ranking"
-            element={
-              <RotaProtegida>
-                <Ranking />
-              </RotaProtegida>
-            }
-          />
-          <Route
-            path="/materias/:id/estatisticas"
-            element={
-              <RotaProtegida>
-                <EstatisticasMateria />
-              </RotaProtegida>
-            }
-          />
-          <Route
-            path="/materias"
-            element={
-              <RotaProtegida>
-                <Materias />
-              </RotaProtegida>
-            }
-          />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/cadastro" element={<Cadastro />} />
+        <Route
+          path="/"
+          element={
+            <RotaProtegida>
+              <Home />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            <RotaProtegida>
+              <Perfil />
+            </RotaProtegida>
+          }
+        />
+        <Route path="/sobre" element={<Sobre />} />
+        <Route
+          path="/materias/:id"
+          element={
+            <RotaProtegida>
+              <Materia />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/minhas-materias"
+          element={
+            <RotaProtegida>
+              <MinhasMaterias />
+            </RotaProtegida>
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/materias/:id/fontes"
+          element={
+            <RotaProtegida>
+              <CaixaFontes />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/materias/:id/atividades"
+          element={
+            <RotaProtegida>
+              <AtividadesMateria />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/materias/:id/praticar"
+          element={
+            <RotaProtegida>
+              <SessaoPratica />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/ranking"
+          element={
+            <RotaProtegida>
+              <Ranking />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/materias/:id/estatisticas"
+          element={
+            <RotaProtegida>
+              <EstatisticasMateria />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="/materias"
+          element={
+            <RotaProtegida>
+              <Materias />
+            </RotaProtegida>
+          }
+        />
+      </Routes>
     </AuthProvider>
   );
 }
