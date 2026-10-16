@@ -163,7 +163,7 @@ export function AtividadesMateria() {
 
   return (
     <div className="App">
-      <Link to="/">← Voltar</Link>
+      <Link to="/materias">← Voltar</Link>
       <h1>Atividades</h1>
 
       {ehProfessor && (

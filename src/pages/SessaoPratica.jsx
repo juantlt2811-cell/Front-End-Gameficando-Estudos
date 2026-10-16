@@ -105,7 +105,7 @@ export function SessaoPratica() {
   if (usuario.tipoUsuario !== TIPO_USUARIO.ALUNO) {
     return (
       <div className="App">
-        <Link to="/">← Voltar</Link>
+        <Link to="/materias">← Voltar</Link>
         <p>Essa área é exclusiva para alunos.</p>
       </div>
     );
@@ -116,7 +116,7 @@ export function SessaoPratica() {
   if (resumoFinal) {
     return (
       <div className="App">
-        <Link to="/">← Voltar</Link>
+        <Link to="/materias">← Voltar</Link>
         <h1>Sessão concluída!</h1>
         <p>Questões respondidas: {resumoFinal.totalRespondidas}</p>
         <p>Acertos: {resumoFinal.totalAcertos}</p>
@@ -132,7 +132,7 @@ export function SessaoPratica() {
 
     return (
       <div className="App">
-        <Link to="/">← Voltar</Link>
+        <Link to="/materias">← Voltar</Link>
         <h1>Praticando</h1>
         <p>
           Questão {indiceAtual + 1} de {sessao.questoes.length}
@@ -190,7 +190,7 @@ export function SessaoPratica() {
 
   return (
     <div className="App">
-      <Link to="/">← Voltar</Link>
+      <Link to="/materias">← Voltar</Link>
       <h1>Praticar</h1>
       {erro && <p>{erro}</p>}
       {confirmacao && (

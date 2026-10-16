@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Sobre } from "./pages/Sobre";
-import { Materia } from "./pages/Materia";
 import { AuthProvider } from "./context/AuthContext";
 import { Login } from "./pages/Login";
 import { RotaProtegida } from "./components/RotaProtegida";
@@ -37,14 +36,6 @@ function App() {
           }
         />
         <Route path="/sobre" element={<Sobre />} />
-        <Route
-          path="/materias/:id"
-          element={
-            <RotaProtegida>
-              <Materia />
-            </RotaProtegida>
-          }
-        />
         <Route
           path="/minhas-materias"
           element={
