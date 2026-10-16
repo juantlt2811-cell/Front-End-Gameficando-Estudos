@@ -425,3 +425,34 @@ body {
   --erro: #e07056;
   --sucesso: #4fae7c;
 }
+.ranking-colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.ranking-coluna + .ranking-coluna {
+  padding-left: 48px;
+  border-left: 1px solid var(--borda);
+}
+
+.ranking-coluna h3 {
+  margin-top: 0;
+}
+
+.ranking-coluna table {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .ranking-colunas {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .ranking-coluna + .ranking-coluna {
+    padding-left: 0;
+    border-left: none;
+  }
+}

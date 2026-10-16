@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export function Ranking() {
@@ -39,7 +38,9 @@ export function Ranking() {
         );
         const dados = await resp.json();
         setMaterias(dados);
-      } catch {}
+      } catch {
+        // se falhar, só não preenche o seletor de matérias
+      }
     }
 
     carregarOfensiva();
@@ -69,53 +70,82 @@ export function Ranking() {
 
   return (
     <div className="App">
-      <Link to="/">← Voltar</Link>
       <h1>Ranking</h1>
 
-      <h3>Ofensiva (geral)</h3>
-      {carregandoOfensiva && <p>Carregando...</p>}
-      {erroOfensiva && <p>{erroOfensiva}</p>}
-      {!carregandoOfensiva && !erroOfensiva && (
-        <ol>
-          {rankingOfensiva.map((item) => (
-            <li key={item.posicao}>
-              {item.nome} — ofensiva atual: {item.ofensivaAtual} (maior:{" "}
-              {item.maiorOfensiva})
-            </li>
-          ))}
-        </ol>
-      )}
+      <div className="ranking-colunas">
+        <section className="ranking-coluna">
+          <h3>Ofensiva (geral)</h3>
+          {carregandoOfensiva && <p>Carregando...</p>}
+          {erroOfensiva && <p className="erro">{erroOfensiva}</p>}
+          {!carregandoOfensiva && !erroOfensiva && (
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nome</th>
+                  <th>Ofensiva</th>
+                  <th>Maior</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rankingOfensiva.map((item) => (
+                  <tr key={item.posicao}>
+                    <td>{item.posicao}</td>
+                    <td>{item.nome}</td>
+                    <td>{item.ofensivaAtual}</td>
+                    <td>{item.maiorOfensiva}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
 
-      <h3>Ranking por matéria</h3>
-      <select
-        value={idMateriaSelecionada}
-        onChange={(e) => carregarRankingMateria(e.target.value)}
-      >
-        <option value="">Selecione uma matéria</option>
-        {materias.map((materia) => (
-          <option key={materia.id} value={materia.id}>
-            {materia.nome}
-          </option>
-        ))}
-      </select>
+        <section className="ranking-coluna">
+          <h3>Por matéria</h3>
+          <select
+            value={idMateriaSelecionada}
+            onChange={(e) => carregarRankingMateria(e.target.value)}
+          >
+            <option value="">Selecione uma matéria</option>
+            {materias.map((materia) => (
+              <option key={materia.id} value={materia.id}>
+                {materia.nome}
+              </option>
+            ))}
+          </select>
 
-      {carregandoMateria && <p>Carregando...</p>}
-      {erroMateria && <p>{erroMateria}</p>}
-      {rankingMateria && rankingMateria.length === 0 && (
-        <p>
-          Ainda não há tentativas suficientes nessa matéria pra gerar ranking.
-        </p>
-      )}
-      {rankingMateria && rankingMateria.length > 0 && (
-        <ol>
-          {rankingMateria.map((item) => (
-            <li key={item.posicao}>
-              {item.nome} — {item.totalAcertos}/{item.totalTentativas} acertos (
-              {item.percentualAcerto.toFixed(0)}%)
-            </li>
-          ))}
-        </ol>
-      )}
+          {carregandoMateria && <p>Carregando...</p>}
+          {erroMateria && <p className="erro">{erroMateria}</p>}
+          {rankingMateria && rankingMateria.length === 0 && (
+            <p>Ainda não há tentativas suficientes nessa matéria.</p>
+          )}
+          {rankingMateria && rankingMateria.length > 0 && (
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nome</th>
+                  <th>Acertos</th>
+                  <th>%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rankingMateria.map((item) => (
+                  <tr key={item.posicao}>
+                    <td>{item.posicao}</td>
+                    <td>{item.nome}</td>
+                    <td>
+                      {item.totalAcertos}/{item.totalTentativas}
+                    </td>
+                    <td>{item.percentualAcerto.toFixed(0)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
