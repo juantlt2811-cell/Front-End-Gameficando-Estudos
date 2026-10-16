@@ -1,4 +1,3 @@
-import "./App.css";
 import { Routes, Route, Link } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Sobre } from "./pages/Sobre";
@@ -13,6 +12,8 @@ import { CaixaFontes } from "./pages/CaixaFontes";
 import { AtividadesMateria } from "./pages/AtividadesMateria";
 import { SessaoPratica } from "./pages/SessaoPratica";
 import { Ranking } from "./pages/Ranking";
+import { EstatisticasMateria } from "./pages/EstatisticasMateria";
+import { Materias } from "./pages/Materias";
 
 function App() {
   return (
@@ -87,6 +88,22 @@ function App() {
             element={
               <RotaProtegida>
                 <Ranking />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/materias/:id/estatisticas"
+            element={
+              <RotaProtegida>
+                <EstatisticasMateria />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/materias"
+            element={
+              <RotaProtegida>
+                <Materias />
               </RotaProtegida>
             }
           />

@@ -30,6 +30,11 @@ export function ListaMaterias({
           {usuario.tipoUsuario === TIPO_USUARIO.ALUNO && (
             <Link to={`/materias/${materia.id}/praticar`}>Praticar</Link>
           )}
+          {onGerenciarFontes && (
+            <Link to={`/materias/${materia.id}/estatisticas`}>
+              Ver estatísticas
+            </Link>
+          )}
         </li>
       ))}
     </ul>

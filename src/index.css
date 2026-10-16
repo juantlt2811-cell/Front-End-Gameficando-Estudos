@@ -1,111 +1,406 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --tinta: #1b2a4a;
+  --tinta-clara: #2e4573;
+  --papel: #f3f4f8;
+  --superficie: #ffffff;
+  --dourado: #d9a441;
+  --dourado-escuro: #a6791f;
+  --texto: #1c1f2a;
+  --texto-suave: #5c6b8a;
+  --borda: #d8dce6;
+  --erro: #b3432b;
+  --sucesso: #2f6f4e;
 
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --fonte-titulo: "Fraunces", Georgia, serif;
+  --fonte-corpo: "IBM Plex Sans", system-ui, sans-serif;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --raio: 6px;
+  --raio-pequeno: 4px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  background: var(--papel);
+  color: var(--texto);
+  font-family: var(--fonte-corpo);
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-#root {
-  max-width: 100%;
+.App {
+  max-width: 720px;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+  padding: 32px 20px 64px;
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 2rem;
   line-height: 1.15;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+  margin: 0 0 24px;
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+
+h3 {
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--tinta);
+  margin: 32px 0 12px;
 }
+
 p {
+  color: var(--texto);
+  margin: 0 0 12px;
+}
+
+a {
+  color: var(--tinta-clara);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* links soltos no topo de cada página (Início, Sobre, ← Voltar) */
+.App > a {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+  margin-right: 16px;
+  margin-bottom: 20px;
+}
+
+/* ---------- formulários ---------- */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 440px;
+  margin-bottom: 24px;
+}
+
+input,
+select,
+textarea {
+  font-family: var(--fonte-corpo);
+  font-size: 1rem;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--tinta-clara);
+  outline-offset: 1px;
+  border-color: var(--tinta-clara);
+}
+
+/* ---------- botões ---------- */
+
+button {
+  font-family: var(--fonte-corpo);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid var(--tinta);
+  background: var(--tinta);
+  color: #fff;
+  cursor: pointer;
+  width: fit-content;
+}
+
+button:hover {
+  background: var(--tinta-clara);
+  border-color: var(--tinta-clara);
+}
+
+button:disabled {
+  background: var(--borda);
+  border-color: var(--borda);
+  color: var(--texto-suave);
+  cursor: not-allowed;
+}
+
+/* botões "Cancelar" (type="button") ficam no estilo secundário, de contorno */
+button[type="button"] {
+  background: transparent;
+  color: var(--tinta);
+  border-color: var(--borda);
+}
+
+button[type="button"]:hover {
+  background: var(--papel);
+  border-color: var(--tinta);
+}
+
+li button,
+li a {
+  margin-right: 10px;
+  margin-top: 8px;
+}
+
+li button {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+/* ---------- listas viram cards ---------- */
+
+ul {
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+li {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--tinta);
+  border-radius: var(--raio);
+  padding: 16px 18px;
+  margin-bottom: 12px;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* listas de alternativas (múltipla escolha) voltam a ser lista simples, sem virar card */
+li ul {
+  margin-top: 8px;
+}
+
+li ul li {
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--borda);
+  border-radius: 0;
+  padding: 4px 0 4px 12px;
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+/* listas numeradas de ranking */
+ol {
+  padding: 0;
+  margin: 0;
+  counter-reset: posicao;
+}
+
+ol li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+ol li::before {
+  counter-increment: posicao;
+  content: counter(posicao);
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--tinta);
+  min-width: 24px;
+}
+
+ol li:first-child {
+  border-left-color: var(--dourado);
+}
+
+ol li:first-child::before {
+  color: var(--dourado-escuro);
+}
+
+/* ---------- tabelas (ranking por matéria, estatísticas) ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  overflow: hidden;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--borda);
+  font-size: 0.95rem;
+}
+
+th {
+  background: var(--papel);
+  color: var(--tinta);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---------- mensagens de erro ---------- */
+
+p:has(+ button),
+.App p {
+  color: var(--texto);
+}
+
+/* parágrafos de erro não têm classe hoje — estilo aplicado onde já existe padrão de uso:
+   logo após um form, texto curto isolado. Se quiser diferenciar de verdade, adicionar
+   className="erro" nos <p>{erro}</p> do projeto é o próximo passo natural. */
+.erro {
+  color: var(--erro);
+  font-weight: 500;
+}
+
+.sucesso {
+  color: var(--sucesso);
+  font-weight: 500;
+}
+
+/* ---------- responsivo ---------- */
+
+@media (max-width: 480px) {
+  .App {
+    padding: 20px 16px 48px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  form {
+    max-width: 100%;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 8px 10px;
+  }
+}
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--tinta);
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cabecalho-marca {
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.cabecalho-marca:hover {
+  text-decoration: none;
+  color: var(--dourado);
+}
+
+.cabecalho-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cabecalho-nav a {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.cabecalho-nav a:hover {
+  color: var(--dourado);
+  text-decoration: none;
+}
+
+.cabecalho-nav button {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}
+
+.cabecalho-nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+.cards-dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.card-dashboard {
+  display: block;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--tinta);
+  border-radius: var(--raio);
+  padding: 20px;
+  color: var(--texto);
+}
+
+.card-dashboard:hover {
+  border-left-color: var(--dourado);
+  text-decoration: none;
+}
+
+.card-dashboard h3 {
+  margin: 0 0 6px;
+}
+
+.card-dashboard p {
+  color: var(--texto-suave);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .cabecalho {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cabecalho-nav {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .cards-dashboard {
+    grid-template-columns: 1fr;
+  }
 }
