@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -35,6 +35,9 @@ export function Login() {
       />
       {erro && <p>{erro}</p>}
       <button type="submit">Entrar</button>
+      <p>
+        Não tem conta? <Link to="/cadastro">Criar conta</Link>
+      </p>
     </form>
   );
 }

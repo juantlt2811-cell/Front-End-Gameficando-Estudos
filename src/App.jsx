@@ -7,6 +7,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { Login } from "./pages/Login";
 import { RotaProtegida } from "./components/RotaProtegida";
 import { MinhasMaterias } from "./pages/MinhasMaterias";
+import { Cadastro } from "./pages/Cadastro";
+import { Perfil } from "./pages/Perfil";
 
 function App() {
   return (
@@ -17,11 +19,20 @@ function App() {
           <Link to="/sobre">Sobre</Link>
         </nav>
         <Routes>
+          <Route path="/cadastro" element={<Cadastro />} />
           <Route
             path="/"
             element={
               <RotaProtegida>
                 <Home />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              <RotaProtegida>
+                <Perfil />
               </RotaProtegida>
             }
           />
