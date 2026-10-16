@@ -6,6 +6,7 @@ import { Materia } from "./pages/Materia";
 import { AuthProvider } from "./context/AuthContext";
 import { Login } from "./pages/Login";
 import { RotaProtegida } from "./components/RotaProtegida";
+import { MinhasMaterias } from "./pages/MinhasMaterias";
 
 function App() {
   return (
@@ -30,6 +31,14 @@ function App() {
             element={
               <RotaProtegida>
                 <Materia />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/minhas-materias"
+            element={
+              <RotaProtegida>
+                <MinhasMaterias />
               </RotaProtegida>
             }
           />
