@@ -9,6 +9,7 @@ export function MinhasMaterias() {
   const [materias, setMaterias] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const [materiaEditando, setMateriaEditando] = useState(null);
 
   async function carregarMinhas() {
     setCarregando(true);
@@ -32,16 +33,49 @@ export function MinhasMaterias() {
     carregarMinhas();
   }, []);
 
+  async function handleExcluir(id) {
+    if (!window.confirm("Tem certeza que quer excluir essa matéria?")) return;
+    try {
+      const resposta = await fetch(`https://localhost:7259/api/materia/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${usuario.token}` },
+      });
+      if (!resposta.ok) {
+        const dados = await resposta.json();
+        throw new Error(dados.erro || "Não foi possível excluir.");
+      }
+      carregarMinhas();
+    } catch (err) {
+      setErro(err.message);
+    }
+  }
+
+  function handleSalvo() {
+    setMateriaEditando(null);
+    carregarMinhas();
+  }
+
   return (
     <div className="App">
       <Link to="/">← Voltar</Link>
       <h1>Minhas matérias</h1>
 
-      <CriarMateriaForm onCriada={carregarMinhas} />
+      <CriarMateriaForm
+        onCriada={handleSalvo}
+        materiaParaEditar={materiaEditando}
+        onCancelarEdicao={() => setMateriaEditando(null)}
+      />
 
       {carregando && <p>Carregando...</p>}
       {erro && <p>{erro}</p>}
-      {!carregando && !erro && <ListaMaterias materias={materias} />}
+      {!carregando && !erro && (
+        <ListaMaterias
+          materias={materias}
+          onEditar={setMateriaEditando}
+          onExcluir={handleExcluir}
+          onGerenciarFontes={true}
+        />
+      )}
     </div>
   );
 }

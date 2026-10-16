@@ -9,6 +9,7 @@ import { RotaProtegida } from "./components/RotaProtegida";
 import { MinhasMaterias } from "./pages/MinhasMaterias";
 import { Cadastro } from "./pages/Cadastro";
 import { Perfil } from "./pages/Perfil";
+import { CaixaFontes } from "./pages/CaixaFontes";
 
 function App() {
   return (
@@ -54,6 +55,14 @@ function App() {
             }
           />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/materias/:id/fontes"
+            element={
+              <RotaProtegida>
+                <CaixaFontes />
+              </RotaProtegida>
+            }
+          />
         </Routes>
       </div>
     </AuthProvider>
