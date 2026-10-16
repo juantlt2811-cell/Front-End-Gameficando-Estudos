@@ -60,9 +60,9 @@ export function Materias() {
       <h1>Matérias</h1>
 
       {usuario.tipoUsuario === TIPO_USUARIO.PROFESSOR && (
-        <p>
-          <Link to="/minhas-materias">Minhas matérias</Link>
-        </p>
+        <Link to="/minhas-materias" className="link-botao">
+          Minhas matérias
+        </Link>
       )}
 
       <form onSubmit={handlePesquisar}>
