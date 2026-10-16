@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../constants/api";
 
 export function Ranking() {
   const { fetchAutenticado } = useAuth();
@@ -18,7 +19,7 @@ export function Ranking() {
     async function carregarOfensiva() {
       try {
         const resp = await fetchAutenticado(
-          "https://localhost:7259/api/ranking/ofensiva",
+          `${API_BASE_URL}/api/ranking/ofensiva`,
         );
         const dados = await resp.json();
         if (!resp.ok)
@@ -34,7 +35,7 @@ export function Ranking() {
     async function carregarMaterias() {
       try {
         const resp = await fetchAutenticado(
-          "https://localhost:7259/api/materia/disponiveis",
+          `${API_BASE_URL}/api/materia/disponiveis`,
         );
         const dados = await resp.json();
         setMaterias(dados);
@@ -56,7 +57,7 @@ export function Ranking() {
     setCarregandoMateria(true);
     try {
       const resp = await fetchAutenticado(
-        `https://localhost:7259/api/ranking/materia/${idMateria}`,
+        `${API_BASE_URL}/api/ranking/materia/${idMateria}`,
       );
       const dados = await resp.json();
       if (!resp.ok) throw new Error(dados.erro || "Não foi possível carregar.");

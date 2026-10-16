@@ -1,0 +1,389 @@
+diff --git a/src/components/CriarMateriaForm.jsx b/src/components/CriarMateriaForm.jsx
+index 3bb856e..b563bf8 100644
+--- a/src/components/CriarMateriaForm.jsx
++++ b/src/components/CriarMateriaForm.jsx
+@@ -1,5 +1,6 @@
+ import { useState, useEffect } from "react";
+ import { useAuth } from "../context/AuthContext";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function CriarMateriaForm({
+   onCriada,
+@@ -29,8 +30,8 @@ export function CriarMateriaForm({
+     setEnviando(true);
+     try {
+       const url = editando
+-        ? "https://localhost:7259/api/materia/atualizar"
+-        : "https://localhost:7259/api/materia/criar";
++        ? `${API_BASE_URL}/api/materia/atualizar`
++        : `${API_BASE_URL}/api/materia/criar`;
+       const method = editando ? "PUT" : "POST";
+       const body = editando
+         ? {
+diff --git a/src/constants/api.js b/src/constants/api.js
+new file mode 100644
+index 0000000..5a02032
+--- /dev/null
++++ b/src/constants/api.js
+@@ -0,0 +1 @@
++export const API_BASE_URL = "https://localhost:7259";
+diff --git a/src/context/AuthContext.jsx b/src/context/AuthContext.jsx
+index e756cd3..234ec1f 100644
+--- a/src/context/AuthContext.jsx
++++ b/src/context/AuthContext.jsx
+@@ -1,4 +1,5 @@
+ import { createContext, useContext, useState } from "react";
++import { API_BASE_URL } from "../constants/api";
+ 
+ const AuthContext = createContext(null);
+ 
+@@ -14,7 +15,7 @@ export function AuthProvider({ children }) {
+   }
+ 
+   async function login(email, senha) {
+-    const resposta = await fetch("https://localhost:7259/api/auth/login", {
++    const resposta = await fetch(`${API_BASE_URL}/api/auth/login`, {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({ email, senha }),
+@@ -27,7 +28,7 @@ export function AuthProvider({ children }) {
+   async function atualizarToken() {
+     if (!usuario?.refreshToken) throw new Error("Sem refresh token.");
+ 
+-    const resposta = await fetch("https://localhost:7259/api/auth/refresh", {
++    const resposta = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({ refreshToken: usuario.refreshToken }),
+@@ -45,7 +46,7 @@ export function AuthProvider({ children }) {
+   async function logout() {
+     if (usuario?.refreshToken) {
+       try {
+-        await fetch("https://localhost:7259/api/auth/logout", {
++        await fetch(`${API_BASE_URL}/api/auth/logout`, {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({ refreshToken: usuario.refreshToken }),
+diff --git a/src/pages/AtividadesMateria.jsx b/src/pages/AtividadesMateria.jsx
+index 283b683..9014a81 100644
+--- a/src/pages/AtividadesMateria.jsx
++++ b/src/pages/AtividadesMateria.jsx
+@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
+ import { useAuth } from "../context/AuthContext";
+ import { TIPO_USUARIO } from "../constants/tipoUsuario";
+ import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function AtividadesMateria() {
+   const { id } = useParams();
+@@ -37,7 +38,7 @@ export function AtividadesMateria() {
+     setCarregando(true);
+     try {
+       const resposta = await fetchAutenticado(
+-        `https://localhost:7259/api/atividade/materia/${idMateria}`,
++        `${API_BASE_URL}/api/atividade/materia/${idMateria}`,
+       );
+       const dados = await resposta.json();
+       if (!resposta.ok)
+@@ -60,7 +61,7 @@ export function AtividadesMateria() {
+     setGerando(true);
+     try {
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/atividade/gerar",
++        `${API_BASE_URL}/api/atividade/gerar`,
+         {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+@@ -93,7 +94,7 @@ export function AtividadesMateria() {
+     setErro(null);
+     try {
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/atividade/atualizar",
++        `${API_BASE_URL}/api/atividade/atualizar`,
+         {
+           method: "PUT",
+           headers: { "Content-Type": "application/json" },
+@@ -127,7 +128,7 @@ export function AtividadesMateria() {
+     if (!window.confirm("Excluir essa atividade?")) return;
+     try {
+       const resposta = await fetchAutenticado(
+-        `https://localhost:7259/api/atividade/${idAtividade}`,
++        `${API_BASE_URL}/api/atividade/${idAtividade}`,
+         { method: "DELETE" },
+       );
+       if (!resposta.ok) {
+@@ -145,7 +146,7 @@ export function AtividadesMateria() {
+     setResultadoTeste(null);
+     try {
+       const resposta = await fetchAutenticado(
+-        `https://localhost:7259/api/atividade/${idAtividade}/testar`,
++        `${API_BASE_URL}/api/atividade/${idAtividade}/testar`,
+         {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+diff --git a/src/pages/Cadastro.jsx b/src/pages/Cadastro.jsx
+index 1b23d5c..7c73657 100644
+--- a/src/pages/Cadastro.jsx
++++ b/src/pages/Cadastro.jsx
+@@ -2,6 +2,7 @@ import { useState } from "react";
+ import { useNavigate, Link } from "react-router-dom";
+ import { useAuth } from "../context/AuthContext";
+ import { TIPO_USUARIO } from "../constants/tipoUsuario";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function Cadastro() {
+   const [nome, setNome] = useState("");
+@@ -19,7 +20,7 @@ export function Cadastro() {
+     setEnviando(true);
+     try {
+       const resposta = await fetch(
+-        "https://localhost:7259/api/auth/cadastrar",
++        `${API_BASE_URL}/api/auth/cadastrar`,
+         {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+diff --git a/src/pages/CaixaFontes.jsx b/src/pages/CaixaFontes.jsx
+index fdb3d29..3af3b21 100644
+--- a/src/pages/CaixaFontes.jsx
++++ b/src/pages/CaixaFontes.jsx
+@@ -1,6 +1,7 @@
+ import { useState, useEffect } from "react";
+ import { useParams, Link } from "react-router-dom";
+ import { useAuth } from "../context/AuthContext";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function CaixaFontes() {
+   const { id } = useParams();
+@@ -22,7 +23,7 @@ export function CaixaFontes() {
+     setCarregando(true);
+     try {
+       const resposta = await fetchAutenticado(
+-        `https://localhost:7259/api/caixafontes/materia/${idMateria}/materiais`,
++        `${API_BASE_URL}/api/caixafontes/materia/${idMateria}/materiais`,
+       );
+       const dados = await resposta.json();
+       if (!resposta.ok)
+@@ -45,7 +46,7 @@ export function CaixaFontes() {
+     setErro(null);
+     try {
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/caixafontes/processar-texto",
++        `${API_BASE_URL}/api/caixafontes/processar-texto`,
+         {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+@@ -81,7 +82,7 @@ export function CaixaFontes() {
+       formData.append("arquivo", arquivo);
+ 
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/caixafontes/upload",
++        `${API_BASE_URL}/api/caixafontes/upload`,
+         {
+           method: "POST",
+           body: formData,
+@@ -106,7 +107,7 @@ export function CaixaFontes() {
+       return;
+     try {
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/caixafontes/remover-material",
++        `${API_BASE_URL}/api/caixafontes/remover-material`,
+         {
+           method: "DELETE",
+           headers: { "Content-Type": "application/json" },
+diff --git a/src/pages/EstatisticasMateria.jsx b/src/pages/EstatisticasMateria.jsx
+index 8fb1a2d..b1f729e 100644
+--- a/src/pages/EstatisticasMateria.jsx
++++ b/src/pages/EstatisticasMateria.jsx
+@@ -1,6 +1,7 @@
+ import { useState, useEffect } from "react";
+ import { useParams, Link } from "react-router-dom";
+ import { useAuth } from "../context/AuthContext";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function EstatisticasMateria() {
+   const { id } = useParams();
+@@ -15,7 +16,7 @@ export function EstatisticasMateria() {
+     async function carregar() {
+       try {
+         const resp = await fetchAutenticado(
+-          `https://localhost:7259/api/materia/${idMateria}/estatisticas`,
++          `${API_BASE_URL}/api/materia/${idMateria}/estatisticas`,
+         );
+         const dados = await resp.json();
+         if (!resp.ok)
+diff --git a/src/pages/Materias.jsx b/src/pages/Materias.jsx
+index e1a1672..f38a6fe 100644
+--- a/src/pages/Materias.jsx
++++ b/src/pages/Materias.jsx
+@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
+ import { ListaMaterias } from "../components/ListaMaterias";
+ import { useAuth } from "../context/AuthContext";
+ import { TIPO_USUARIO } from "../constants/tipoUsuario";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function Materias() {
+   const [materias, setMaterias] = useState([]);
+@@ -18,7 +19,7 @@ export function Materias() {
+     setCarregando(true);
+     try {
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/materia/disponiveis",
++        `${API_BASE_URL}/api/materia/disponiveis`,
+       );
+       const dados = await resposta.json();
+       setMaterias(dados);
+@@ -39,7 +40,7 @@ export function Materias() {
+     setPesquisando(true);
+     try {
+       const resposta = await fetchAutenticado(
+-        `https://localhost:7259/api/materia/pesquisar?termo=${encodeURIComponent(termoPesquisa)}`,
++        `${API_BASE_URL}/api/materia/pesquisar?termo=${encodeURIComponent(termoPesquisa)}`,
+       );
+       const dados = await resposta.json();
+       setResultadosPesquisa(dados);
+diff --git a/src/pages/MinhasMaterias.jsx b/src/pages/MinhasMaterias.jsx
+index c1543bb..208a47f 100644
+--- a/src/pages/MinhasMaterias.jsx
++++ b/src/pages/MinhasMaterias.jsx
+@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
+ import { useAuth } from "../context/AuthContext";
+ import { ListaMaterias } from "../components/ListaMaterias";
+ import { CriarMateriaForm } from "../components/CriarMateriaForm";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function MinhasMaterias() {
+   const { fetchAutenticado } = useAuth();
+@@ -15,7 +16,7 @@ export function MinhasMaterias() {
+     setCarregando(true);
+     try {
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/materia/minhas",
++        `${API_BASE_URL}/api/materia/minhas`,
+       );
+       const dados = await resposta.json();
+       setMaterias(dados);
+@@ -34,7 +35,7 @@ export function MinhasMaterias() {
+     if (!window.confirm("Tem certeza que quer excluir essa matéria?")) return;
+     try {
+       const resposta = await fetchAutenticado(
+-        `https://localhost:7259/api/materia/${id}`,
++        `${API_BASE_URL}/api/materia/${id}`,
+         { method: "DELETE" },
+       );
+       if (!resposta.ok) {
+diff --git a/src/pages/Perfil.jsx b/src/pages/Perfil.jsx
+index d11afeb..39562cd 100644
+--- a/src/pages/Perfil.jsx
++++ b/src/pages/Perfil.jsx
+@@ -1,6 +1,7 @@
+ import { useState, useEffect } from "react";
+ import { useNavigate, Link } from "react-router-dom";
+ import { useAuth } from "../context/AuthContext";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function Perfil() {
+   const { fetchAutenticado, logout } = useAuth();
+@@ -18,7 +19,7 @@ export function Perfil() {
+     async function carregar() {
+       try {
+         const resposta = await fetchAutenticado(
+-          "https://localhost:7259/api/usuario/meus-dados",
++          `${API_BASE_URL}/api/usuario/meus-dados`,
+         );
+         const dados = await resposta.json();
+         if (!resposta.ok)
+@@ -53,7 +54,7 @@ export function Perfil() {
+     setExcluindo(true);
+     try {
+       const resposta = await fetchAutenticado(
+-        "https://localhost:7259/api/usuario/minha-conta",
++        `${API_BASE_URL}/api/usuario/minha-conta`,
+         {
+           method: "DELETE",
+           headers: { "Content-Type": "application/json" },
+diff --git a/src/pages/Ranking.jsx b/src/pages/Ranking.jsx
+index e1b350c..7a93163 100644
+--- a/src/pages/Ranking.jsx
++++ b/src/pages/Ranking.jsx
+@@ -1,5 +1,6 @@
+ import { useState, useEffect } from "react";
+ import { useAuth } from "../context/AuthContext";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function Ranking() {
+   const { fetchAutenticado } = useAuth();
+@@ -18,7 +19,7 @@ export function Ranking() {
+     async function carregarOfensiva() {
+       try {
+         const resp = await fetchAutenticado(
+-          "https://localhost:7259/api/ranking/ofensiva",
++          `${API_BASE_URL}/api/ranking/ofensiva`,
+         );
+         const dados = await resp.json();
+         if (!resp.ok)
+@@ -34,7 +35,7 @@ export function Ranking() {
+     async function carregarMaterias() {
+       try {
+         const resp = await fetchAutenticado(
+-          "https://localhost:7259/api/materia/disponiveis",
++          `${API_BASE_URL}/api/materia/disponiveis`,
+         );
+         const dados = await resp.json();
+         setMaterias(dados);
+@@ -56,7 +57,7 @@ export function Ranking() {
+     setCarregandoMateria(true);
+     try {
+       const resp = await fetchAutenticado(
+-        `https://localhost:7259/api/ranking/materia/${idMateria}`,
++        `${API_BASE_URL}/api/ranking/materia/${idMateria}`,
+       );
+       const dados = await resp.json();
+       if (!resp.ok) throw new Error(dados.erro || "Não foi possível carregar.");
+diff --git a/src/pages/SessaoPratica.jsx b/src/pages/SessaoPratica.jsx
+index f215910..7ea944f 100644
+--- a/src/pages/SessaoPratica.jsx
++++ b/src/pages/SessaoPratica.jsx
+@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
+ import { useAuth } from "../context/AuthContext";
+ import { TIPO_USUARIO } from "../constants/tipoUsuario";
+ import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
++import { API_BASE_URL } from "../constants/api";
+ 
+ export function SessaoPratica() {
+   const { id } = useParams();
+@@ -24,7 +25,7 @@ export function SessaoPratica() {
+     async function carregarConfirmacao() {
+       try {
+         const resp = await fetchAutenticado(
+-          `https://localhost:7259/api/sessaopratica/confirmar-inicio/${idMateria}`,
++          `${API_BASE_URL}/api/sessaopratica/confirmar-inicio/${idMateria}`,
+         );
+         const dados = await resp.json();
+         if (!resp.ok)
+@@ -43,7 +44,7 @@ export function SessaoPratica() {
+     setErro(null);
+     try {
+       const resp = await fetchAutenticado(
+-        `https://localhost:7259/api/sessaopratica/iniciar/${idMateria}`,
++        `${API_BASE_URL}/api/sessaopratica/iniciar/${idMateria}`,
+         { method: "POST" },
+       );
+       const dados = await resp.json();
+@@ -63,7 +64,7 @@ export function SessaoPratica() {
+     try {
+       const questaoAtual = sessao.questoes[indiceAtual];
+       const resp = await fetchAutenticado(
+-        `https://localhost:7259/api/sessaopratica/${sessao.idSessao}/responder/${questaoAtual.id}`,
++        `${API_BASE_URL}/api/sessaopratica/${sessao.idSessao}/responder/${questaoAtual.id}`,
+         {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+@@ -91,7 +92,7 @@ export function SessaoPratica() {
+     setErro(null);
+     try {
+       const resp = await fetchAutenticado(
+-        `https://localhost:7259/api/sessaopratica/${sessao.idSessao}/concluir`,
++        `${API_BASE_URL}/api/sessaopratica/${sessao.idSessao}/concluir`,
+         { method: "POST" },
+       );
+       const dados = await resp.json();

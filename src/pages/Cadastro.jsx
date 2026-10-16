@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
+import { API_BASE_URL } from "../constants/api";
 
 export function Cadastro() {
   const [nome, setNome] = useState("");
@@ -19,7 +20,7 @@ export function Cadastro() {
     setEnviando(true);
     try {
       const resposta = await fetch(
-        "https://localhost:7259/api/auth/cadastrar",
+        `${API_BASE_URL}/api/auth/cadastrar`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

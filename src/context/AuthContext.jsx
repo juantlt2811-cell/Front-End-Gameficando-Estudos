@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { API_BASE_URL } from "../constants/api";
 
 const AuthContext = createContext(null);
 
@@ -14,7 +15,7 @@ export function AuthProvider({ children }) {
   }
 
   async function login(email, senha) {
-    const resposta = await fetch("https://localhost:7259/api/auth/login", {
+    const resposta = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, senha }),
@@ -27,7 +28,7 @@ export function AuthProvider({ children }) {
   async function atualizarToken() {
     if (!usuario?.refreshToken) throw new Error("Sem refresh token.");
 
-    const resposta = await fetch("https://localhost:7259/api/auth/refresh", {
+    const resposta = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken: usuario.refreshToken }),
@@ -45,7 +46,7 @@ export function AuthProvider({ children }) {
   async function logout() {
     if (usuario?.refreshToken) {
       try {
-        await fetch("https://localhost:7259/api/auth/logout", {
+        await fetch(`${API_BASE_URL}/api/auth/logout`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ refreshToken: usuario.refreshToken }),

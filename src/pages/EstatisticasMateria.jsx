@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../constants/api";
 
 export function EstatisticasMateria() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ export function EstatisticasMateria() {
     async function carregar() {
       try {
         const resp = await fetchAutenticado(
-          `https://localhost:7259/api/materia/${idMateria}/estatisticas`,
+          `${API_BASE_URL}/api/materia/${idMateria}/estatisticas`,
         );
         const dados = await resp.json();
         if (!resp.ok)

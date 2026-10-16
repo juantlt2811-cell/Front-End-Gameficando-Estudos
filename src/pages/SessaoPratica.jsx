@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
+import { API_BASE_URL } from "../constants/api";
 
 export function SessaoPratica() {
   const { id } = useParams();
@@ -24,7 +25,7 @@ export function SessaoPratica() {
     async function carregarConfirmacao() {
       try {
         const resp = await fetchAutenticado(
-          `https://localhost:7259/api/sessaopratica/confirmar-inicio/${idMateria}`,
+          `${API_BASE_URL}/api/sessaopratica/confirmar-inicio/${idMateria}`,
         );
         const dados = await resp.json();
         if (!resp.ok)
@@ -43,7 +44,7 @@ export function SessaoPratica() {
     setErro(null);
     try {
       const resp = await fetchAutenticado(
-        `https://localhost:7259/api/sessaopratica/iniciar/${idMateria}`,
+        `${API_BASE_URL}/api/sessaopratica/iniciar/${idMateria}`,
         { method: "POST" },
       );
       const dados = await resp.json();
@@ -63,7 +64,7 @@ export function SessaoPratica() {
     try {
       const questaoAtual = sessao.questoes[indiceAtual];
       const resp = await fetchAutenticado(
-        `https://localhost:7259/api/sessaopratica/${sessao.idSessao}/responder/${questaoAtual.id}`,
+        `${API_BASE_URL}/api/sessaopratica/${sessao.idSessao}/responder/${questaoAtual.id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -91,7 +92,7 @@ export function SessaoPratica() {
     setErro(null);
     try {
       const resp = await fetchAutenticado(
-        `https://localhost:7259/api/sessaopratica/${sessao.idSessao}/concluir`,
+        `${API_BASE_URL}/api/sessaopratica/${sessao.idSessao}/concluir`,
         { method: "POST" },
       );
       const dados = await resp.json();

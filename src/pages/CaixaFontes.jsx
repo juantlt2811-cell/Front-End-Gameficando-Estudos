@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../constants/api";
 
 export function CaixaFontes() {
   const { id } = useParams();
@@ -22,7 +23,7 @@ export function CaixaFontes() {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
-        `https://localhost:7259/api/caixafontes/materia/${idMateria}/materiais`,
+        `${API_BASE_URL}/api/caixafontes/materia/${idMateria}/materiais`,
       );
       const dados = await resposta.json();
       if (!resposta.ok)
@@ -45,7 +46,7 @@ export function CaixaFontes() {
     setErro(null);
     try {
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/caixafontes/processar-texto",
+        `${API_BASE_URL}/api/caixafontes/processar-texto`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -81,7 +82,7 @@ export function CaixaFontes() {
       formData.append("arquivo", arquivo);
 
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/caixafontes/upload",
+        `${API_BASE_URL}/api/caixafontes/upload`,
         {
           method: "POST",
           body: formData,
@@ -106,7 +107,7 @@ export function CaixaFontes() {
       return;
     try {
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/caixafontes/remover-material",
+        `${API_BASE_URL}/api/caixafontes/remover-material`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },

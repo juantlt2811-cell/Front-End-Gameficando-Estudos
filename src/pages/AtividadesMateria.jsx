@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
+import { API_BASE_URL } from "../constants/api";
 
 export function AtividadesMateria() {
   const { id } = useParams();
@@ -37,7 +38,7 @@ export function AtividadesMateria() {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
-        `https://localhost:7259/api/atividade/materia/${idMateria}`,
+        `${API_BASE_URL}/api/atividade/materia/${idMateria}`,
       );
       const dados = await resposta.json();
       if (!resposta.ok)
@@ -60,7 +61,7 @@ export function AtividadesMateria() {
     setGerando(true);
     try {
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/atividade/gerar",
+        `${API_BASE_URL}/api/atividade/gerar`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -93,7 +94,7 @@ export function AtividadesMateria() {
     setErro(null);
     try {
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/atividade/atualizar",
+        `${API_BASE_URL}/api/atividade/atualizar`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -127,7 +128,7 @@ export function AtividadesMateria() {
     if (!window.confirm("Excluir essa atividade?")) return;
     try {
       const resposta = await fetchAutenticado(
-        `https://localhost:7259/api/atividade/${idAtividade}`,
+        `${API_BASE_URL}/api/atividade/${idAtividade}`,
         { method: "DELETE" },
       );
       if (!resposta.ok) {
@@ -145,7 +146,7 @@ export function AtividadesMateria() {
     setResultadoTeste(null);
     try {
       const resposta = await fetchAutenticado(
-        `https://localhost:7259/api/atividade/${idAtividade}/testar`,
+        `${API_BASE_URL}/api/atividade/${idAtividade}/testar`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

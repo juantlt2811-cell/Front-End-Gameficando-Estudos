@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ListaMaterias } from "../components/ListaMaterias";
 import { CriarMateriaForm } from "../components/CriarMateriaForm";
+import { API_BASE_URL } from "../constants/api";
 
 export function MinhasMaterias() {
   const { fetchAutenticado } = useAuth();
@@ -15,7 +16,7 @@ export function MinhasMaterias() {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/materia/minhas",
+        `${API_BASE_URL}/api/materia/minhas`,
       );
       const dados = await resposta.json();
       setMaterias(dados);
@@ -34,7 +35,7 @@ export function MinhasMaterias() {
     if (!window.confirm("Tem certeza que quer excluir essa matéria?")) return;
     try {
       const resposta = await fetchAutenticado(
-        `https://localhost:7259/api/materia/${id}`,
+        `${API_BASE_URL}/api/materia/${id}`,
         { method: "DELETE" },
       );
       if (!resposta.ok) {

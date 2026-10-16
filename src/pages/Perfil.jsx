@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../constants/api";
 
 export function Perfil() {
   const { fetchAutenticado, logout } = useAuth();
@@ -18,7 +19,7 @@ export function Perfil() {
     async function carregar() {
       try {
         const resposta = await fetchAutenticado(
-          "https://localhost:7259/api/usuario/meus-dados",
+          `${API_BASE_URL}/api/usuario/meus-dados`,
         );
         const dados = await resposta.json();
         if (!resposta.ok)
@@ -53,7 +54,7 @@ export function Perfil() {
     setExcluindo(true);
     try {
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/usuario/minha-conta",
+        `${API_BASE_URL}/api/usuario/minha-conta`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },

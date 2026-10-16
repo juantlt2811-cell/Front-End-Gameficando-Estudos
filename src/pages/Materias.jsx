@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ListaMaterias } from "../components/ListaMaterias";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
+import { API_BASE_URL } from "../constants/api";
 
 export function Materias() {
   const [materias, setMaterias] = useState([]);
@@ -18,7 +19,7 @@ export function Materias() {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
-        "https://localhost:7259/api/materia/disponiveis",
+        `${API_BASE_URL}/api/materia/disponiveis`,
       );
       const dados = await resposta.json();
       setMaterias(dados);
@@ -39,7 +40,7 @@ export function Materias() {
     setPesquisando(true);
     try {
       const resposta = await fetchAutenticado(
-        `https://localhost:7259/api/materia/pesquisar?termo=${encodeURIComponent(termoPesquisa)}`,
+        `${API_BASE_URL}/api/materia/pesquisar?termo=${encodeURIComponent(termoPesquisa)}`,
       );
       const dados = await resposta.json();
       setResultadosPesquisa(dados);

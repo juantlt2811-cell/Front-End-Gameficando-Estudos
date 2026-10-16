@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../constants/api";
 
 export function CriarMateriaForm({
   onCriada,
@@ -29,8 +30,8 @@ export function CriarMateriaForm({
     setEnviando(true);
     try {
       const url = editando
-        ? "https://localhost:7259/api/materia/atualizar"
-        : "https://localhost:7259/api/materia/criar";
+        ? `${API_BASE_URL}/api/materia/atualizar`
+        : `${API_BASE_URL}/api/materia/criar`;
       const method = editando ? "PUT" : "POST";
       const body = editando
         ? {
