@@ -11,6 +11,7 @@ import { Cadastro } from "./pages/Cadastro";
 import { Perfil } from "./pages/Perfil";
 import { CaixaFontes } from "./pages/CaixaFontes";
 import { AtividadesMateria } from "./pages/AtividadesMateria";
+import { SessaoPratica } from "./pages/SessaoPratica";
 
 function App() {
   return (
@@ -69,6 +70,14 @@ function App() {
             element={
               <RotaProtegida>
                 <AtividadesMateria />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/materias/:id/praticar"
+            element={
+              <RotaProtegida>
+                <SessaoPratica />
               </RotaProtegida>
             }
           />

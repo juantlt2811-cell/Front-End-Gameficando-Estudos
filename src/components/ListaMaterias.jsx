@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { TIPO_USUARIO } from "../constants/tipoUsuario";
 
 export function ListaMaterias({
   materias,
@@ -6,6 +8,8 @@ export function ListaMaterias({
   onEditar,
   onGerenciarFontes,
 }) {
+  const { usuario } = useAuth();
+
   return (
     <ul>
       {materias.map((materia) => (
@@ -23,6 +27,9 @@ export function ListaMaterias({
             </Link>
           )}
           <Link to={`/materias/${materia.id}/atividades`}>Ver atividades</Link>
+          {usuario.tipoUsuario === TIPO_USUARIO.ALUNO && (
+            <Link to={`/materias/${materia.id}/praticar`}>Praticar</Link>
+          )}
         </li>
       ))}
     </ul>
