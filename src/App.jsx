@@ -12,6 +12,7 @@ import { Perfil } from "./pages/Perfil";
 import { CaixaFontes } from "./pages/CaixaFontes";
 import { AtividadesMateria } from "./pages/AtividadesMateria";
 import { SessaoPratica } from "./pages/SessaoPratica";
+import { Ranking } from "./pages/Ranking";
 
 function App() {
   return (
@@ -78,6 +79,14 @@ function App() {
             element={
               <RotaProtegida>
                 <SessaoPratica />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/ranking"
+            element={
+              <RotaProtegida>
+                <Ranking />
               </RotaProtegida>
             }
           />

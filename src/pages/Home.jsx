@@ -52,6 +52,7 @@ export function Home() {
       {erro && <p>{erro}</p>}
       {!carregando && !erro && <ListaMaterias materias={materias} />}
       <Link to="/perfil">Meus dados</Link>
+      <Link to="/ranking">Ranking</Link>
     </div>
   );
 }
