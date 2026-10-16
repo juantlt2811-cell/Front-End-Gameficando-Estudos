@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useUsuario } from "../context/UsuarioContext";
+import { useAuth } from "../context/AuthContext";
 
 export function Materia() {
   const { id } = useParams();
-  const usuario = useUsuario();
+  const { usuario } = useAuth();
 
   return (
     <div>

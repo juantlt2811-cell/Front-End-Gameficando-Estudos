@@ -1,20 +1,31 @@
 import "../App.css";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ContadorAtividades } from "../components/ContadorAtividades";
 import { ListaMaterias } from "../components/ListaMaterias";
 import { Formulario } from "../components/Formulario";
+import { useAuth } from "../context/AuthContext";
+import { TIPO_USUARIO } from "../constants/tipoUsuario";
 
 export function Home() {
   const [materias, setMaterias] = useState([]);
   const [atividadesFeitas, setAtividadesFeitas] = useState(0);
-  const [carregando, setCarregando] = useState(true); // começa true: ainda não chegou nada
+  const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const { usuario, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
 
   useEffect(() => {
     async function carregar() {
       try {
         const resposta = await fetch(
-          "https://jsonplaceholder.typicode.com/users",
+          "https://localhost:7259/api/materia/disponiveis",
+          { headers: { Authorization: `Bearer ${usuario?.token}` } },
         );
         const dados = await resposta.json();
         setMaterias(dados);
@@ -31,9 +42,18 @@ export function Home() {
   useEffect(() => {
     document.title = `Atividades feitas: ${atividadesFeitas}`;
   }, [atividadesFeitas]);
+
   return (
     <div className="App">
       <h1>Primeiro contato com React - Projeto Gameficando Estudos</h1>
+      <button onClick={handleLogout}>Sair</button>
+
+      {usuario.tipoUsuario === TIPO_USUARIO.PROFESSOR && (
+        <p>Você é professor</p>
+      )}
+      {usuario.tipoUsuario === TIPO_USUARIO.ALUNO && <p>Você é aluno</p>}
+      {usuario.tipoUsuario === TIPO_USUARIO.ADMIN && <p>Você é admin</p>}
+
       <button
         onClick={() => setAtividadesFeitas(atividadesFeitas + 1)}
         disabled={atividadesFeitas >= 3}

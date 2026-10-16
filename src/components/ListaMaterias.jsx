@@ -5,7 +5,7 @@ export function ListaMaterias({ materias }) {
     <ul>
       {materias.map((materia) => (
         <li key={materia.id}>
-          <Link to={`/materias/${materia.id}`}>{materia.name}</Link>
+          <Link to={`/materias/${materia.id}`}>{materia.nome}</Link>
         </li>
       ))}
     </ul>
