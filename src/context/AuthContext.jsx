@@ -8,29 +8,82 @@ export function AuthProvider({ children }) {
     return salvo ? JSON.parse(salvo) : null;
   });
 
+  function salvarUsuario(dados) {
+    setUsuario(dados);
+    localStorage.setItem("usuario", JSON.stringify(dados));
+  }
+
   async function login(email, senha) {
     const resposta = await fetch("https://localhost:7259/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, senha }),
     });
-
-    if (!resposta.ok) {
-      throw new Error("Email ou senha inválidos.");
-    }
-
     const dados = await resposta.json();
-    setUsuario(dados);
-    localStorage.setItem("usuario", JSON.stringify(dados));
+    if (!resposta.ok) throw new Error(dados.erro || "Não foi possível entrar.");
+    salvarUsuario(dados);
   }
 
-  function logout() {
+  async function atualizarToken() {
+    if (!usuario?.refreshToken) throw new Error("Sem refresh token.");
+
+    const resposta = await fetch("https://localhost:7259/api/auth/refresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: usuario.refreshToken }),
+    });
+    const dados = await resposta.json();
+    if (!resposta.ok) {
+      logout();
+      throw new Error("Sessão expirada. Faça login novamente.");
+    }
+
+    salvarUsuario(dados);
+    return dados;
+  }
+
+  async function logout() {
+    if (usuario?.refreshToken) {
+      try {
+        await fetch("https://localhost:7259/api/auth/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken: usuario.refreshToken }),
+        });
+      } catch {
+        // mesmo se der erro de rede, desloga localmente
+      }
+    }
     setUsuario(null);
     localStorage.removeItem("usuario");
   }
 
+  // Use essa função no lugar de fetch() puro em toda chamada que precisa do Bearer token.
+  async function fetchAutenticado(url, options = {}) {
+    const comToken = (token) => ({
+      ...options,
+      headers: { ...options.headers, Authorization: `Bearer ${token}` },
+    });
+
+    let resposta = await fetch(url, comToken(usuario.token));
+
+    if (resposta.status === 401) {
+      try {
+        const novosDados = await atualizarToken();
+        resposta = await fetch(url, comToken(novosDados.token));
+      } catch {
+        return new Response(
+          JSON.stringify({ erro: "Sessão expirada. Faça login novamente." }),
+          { status: 401 },
+        );
+      }
+    }
+
+    return resposta;
+  }
+
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{ usuario, login, logout, fetchAutenticado }}>
       {children}
     </AuthContext.Provider>
   );
@@ -38,8 +91,7 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const contexto = useContext(AuthContext);
-  if (contexto === null) {
-    throw new Error("useAuth precisa ser usado dentro de <AuthProvider>");
-  }
+  if (!contexto)
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   return contexto;
 }

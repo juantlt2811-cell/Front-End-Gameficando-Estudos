@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 export function CaixaFontes() {
   const { id } = useParams();
   const idMateria = Number(id);
-  const { usuario } = useAuth();
+  const { fetchAutenticado } = useAuth();
 
   const [materiais, setMateriais] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -21,9 +21,8 @@ export function CaixaFontes() {
   async function carregarMateriais() {
     setCarregando(true);
     try {
-      const resposta = await fetch(
+      const resposta = await fetchAutenticado(
         `https://localhost:7259/api/caixafontes/materia/${idMateria}/materiais`,
-        { headers: { Authorization: `Bearer ${usuario.token}` } },
       );
       const dados = await resposta.json();
       if (!resposta.ok)
@@ -45,14 +44,11 @@ export function CaixaFontes() {
     setEnviandoTexto(true);
     setErro(null);
     try {
-      const resposta = await fetch(
+      const resposta = await fetchAutenticado(
         "https://localhost:7259/api/caixafontes/processar-texto",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${usuario.token}`,
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             idMateria,
             tituloMaterial: tituloTexto,
@@ -84,11 +80,10 @@ export function CaixaFontes() {
       formData.append("idMateria", idMateria);
       formData.append("arquivo", arquivo);
 
-      const resposta = await fetch(
+      const resposta = await fetchAutenticado(
         "https://localhost:7259/api/caixafontes/upload",
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${usuario.token}` },
           body: formData,
         },
       );
@@ -110,14 +105,11 @@ export function CaixaFontes() {
     if (!window.confirm("Remover esse material da base de conhecimento?"))
       return;
     try {
-      const resposta = await fetch(
+      const resposta = await fetchAutenticado(
         "https://localhost:7259/api/caixafontes/remover-material",
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${usuario.token}`,
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ idMateria, documentoId }),
         },
       );

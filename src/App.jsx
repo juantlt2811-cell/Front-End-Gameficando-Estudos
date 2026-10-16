@@ -10,6 +10,7 @@ import { MinhasMaterias } from "./pages/MinhasMaterias";
 import { Cadastro } from "./pages/Cadastro";
 import { Perfil } from "./pages/Perfil";
 import { CaixaFontes } from "./pages/CaixaFontes";
+import { AtividadesMateria } from "./pages/AtividadesMateria";
 
 function App() {
   return (
@@ -60,6 +61,14 @@ function App() {
             element={
               <RotaProtegida>
                 <CaixaFontes />
+              </RotaProtegida>
+            }
+          />
+          <Route
+            path="/materias/:id/atividades"
+            element={
+              <RotaProtegida>
+                <AtividadesMateria />
               </RotaProtegida>
             }
           />

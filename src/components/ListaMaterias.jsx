@@ -22,6 +22,7 @@ export function ListaMaterias({
               Gerenciar materiais
             </Link>
           )}
+          <Link to={`/materias/${materia.id}/atividades`}>Ver atividades</Link>
         </li>
       ))}
     </ul>

@@ -1,10 +1,9 @@
-// src/pages/Perfil.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export function Perfil() {
-  const { usuario, logout } = useAuth();
+  const { fetchAutenticado, logout } = useAuth();
   const navigate = useNavigate();
   const [dados, setDados] = useState(null);
   const [carregando, setCarregando] = useState(true);
@@ -18,11 +17,8 @@ export function Perfil() {
   useEffect(() => {
     async function carregar() {
       try {
-        const resposta = await fetch(
+        const resposta = await fetchAutenticado(
           "https://localhost:7259/api/usuario/meus-dados",
-          {
-            headers: { Authorization: `Bearer ${usuario?.token}` },
-          },
         );
         const dados = await resposta.json();
         if (!resposta.ok)
@@ -56,14 +52,11 @@ export function Perfil() {
     setErroExclusao(null);
     setExcluindo(true);
     try {
-      const resposta = await fetch(
+      const resposta = await fetchAutenticado(
         "https://localhost:7259/api/usuario/minha-conta",
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${usuario.token}`,
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ senhaAtual: senhaConfirmacao }),
         },
       );

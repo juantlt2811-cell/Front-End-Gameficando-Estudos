@@ -10,7 +10,7 @@ export function Home() {
   const [materias, setMaterias] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
-  const { usuario, logout } = useAuth();
+  const { usuario, logout, fetchAutenticado } = useAuth();
   const navigate = useNavigate();
 
   function handleLogout() {
@@ -21,9 +21,8 @@ export function Home() {
   async function carregarMaterias() {
     setCarregando(true);
     try {
-      const resposta = await fetch(
+      const resposta = await fetchAutenticado(
         "https://localhost:7259/api/materia/disponiveis",
-        { headers: { Authorization: `Bearer ${usuario?.token}` } },
       );
       const dados = await resposta.json();
       setMaterias(dados);

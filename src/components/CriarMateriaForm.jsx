@@ -6,7 +6,7 @@ export function CriarMateriaForm({
   materiaParaEditar,
   onCancelarEdicao,
 }) {
-  const { usuario } = useAuth();
+  const { fetchAutenticado } = useAuth();
   const [nome, setNome] = useState("");
   const [cargaHoraria, setCargaHoraria] = useState("");
   const [dificuldade, setDificuldade] = useState("");
@@ -41,12 +41,9 @@ export function CriarMateriaForm({
           }
         : { nome, cargaHoraria: Number(cargaHoraria), dificuldade };
 
-      const resposta = await fetch(url, {
+      const resposta = await fetchAutenticado(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${usuario.token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       const dados = await resposta.json();

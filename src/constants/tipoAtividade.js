@@ -1,0 +1,5 @@
+export const TIPO_ATIVIDADE = {
+  MULTIPLA_ESCOLHA: 1,
+  DISSERTATIVA: 2,
+  CODIGO: 3,
+};

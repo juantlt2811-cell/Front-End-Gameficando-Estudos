@@ -5,7 +5,7 @@ import { ListaMaterias } from "../components/ListaMaterias";
 import { CriarMateriaForm } from "../components/CriarMateriaForm";
 
 export function MinhasMaterias() {
-  const { usuario } = useAuth();
+  const { fetchAutenticado } = useAuth();
   const [materias, setMaterias] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
@@ -14,11 +14,8 @@ export function MinhasMaterias() {
   async function carregarMinhas() {
     setCarregando(true);
     try {
-      const resposta = await fetch(
+      const resposta = await fetchAutenticado(
         "https://localhost:7259/api/materia/minhas",
-        {
-          headers: { Authorization: `Bearer ${usuario?.token}` },
-        },
       );
       const dados = await resposta.json();
       setMaterias(dados);
@@ -36,10 +33,10 @@ export function MinhasMaterias() {
   async function handleExcluir(id) {
     if (!window.confirm("Tem certeza que quer excluir essa matéria?")) return;
     try {
-      const resposta = await fetch(`https://localhost:7259/api/materia/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${usuario.token}` },
-      });
+      const resposta = await fetchAutenticado(
+        `https://localhost:7259/api/materia/${id}`,
+        { method: "DELETE" },
+      );
       if (!resposta.ok) {
         const dados = await resposta.json();
         throw new Error(dados.erro || "Não foi possível excluir.");
