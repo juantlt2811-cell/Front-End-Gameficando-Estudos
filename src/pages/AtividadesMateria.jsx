@@ -1,9 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import Editor from "@monaco-editor/react";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
 import { API_BASE_URL } from "../constants/api";
+
+// Tenta adivinhar a linguagem do trecho de código só para colorir a sintaxe.
+// Não é perfeito, mas cobre bem os casos mais comuns gerados pela IA.
+function adivinharLinguagem(codigo) {
+  if (!codigo) return "jsx";
+  if (/^\s*(def |import |print\()/m.test(codigo)) return "python";
+  if (
+    /\bpublic\s+(class|static)\b/.test(codigo) &&
+    /System\.out\.println/.test(codigo)
+  )
+    return "java";
+  if (/\busing\s+System\b/.test(codigo) || /\bConsole\.Write/.test(codigo))
+    return "csharp";
+  if (/#include\s*</.test(codigo)) return "c";
+  return "jsx";
+}
 
 export function AtividadesMateria() {
   const { id } = useParams();
@@ -243,11 +260,29 @@ export function AtividadesMateria() {
                     rows={4}
                   />
                 )}
-                <textarea
-                  value={gabaritoEdicao}
-                  onChange={(e) => setGabaritoEdicao(e.target.value)}
-                  placeholder="Gabarito (obrigatório reescrever, o backend não devolve o atual)"
-                />
+                {atividade.tipo === "Codigo" ? (
+                  <div className="editor-codigo">
+                    <Editor
+                      height="140px"
+                      defaultLanguage={adivinharLinguagem(conteudoEdicao)}
+                      theme="vs-dark"
+                      value={gabaritoEdicao}
+                      onChange={(valor) => setGabaritoEdicao(valor || "")}
+                      options={{
+                        minimap: { enabled: false },
+                        fontSize: 14,
+                        automaticLayout: true,
+                        tabSize: 2,
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <textarea
+                    value={gabaritoEdicao}
+                    onChange={(e) => setGabaritoEdicao(e.target.value)}
+                    placeholder="Gabarito (obrigatório reescrever, o backend não devolve o atual)"
+                  />
+                )}
                 <button type="submit">Salvar</button>
                 <button type="button" onClick={() => setIdEditando(null)}>
                   Cancelar
@@ -256,11 +291,29 @@ export function AtividadesMateria() {
             )}
             {idTestando === atividade.id && (
               <form onSubmit={(e) => handleTestar(e, atividade.id)}>
-                <input
-                  value={respostaTeste}
-                  onChange={(e) => setRespostaTeste(e.target.value)}
-                  placeholder="Resposta de teste"
-                />
+                {atividade.tipo === "Codigo" ? (
+                  <div className="editor-codigo">
+                    <Editor
+                      height="160px"
+                      defaultLanguage={adivinharLinguagem(atividade.conteudo)}
+                      theme="vs-dark"
+                      value={respostaTeste}
+                      onChange={(valor) => setRespostaTeste(valor || "")}
+                      options={{
+                        minimap: { enabled: false },
+                        fontSize: 14,
+                        automaticLayout: true,
+                        tabSize: 2,
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <input
+                    value={respostaTeste}
+                    onChange={(e) => setRespostaTeste(e.target.value)}
+                    placeholder="Resposta de teste"
+                  />
+                )}
                 <button type="submit">Enviar teste</button>
                 {resultadoTeste && <p>{resultadoTeste.feedback}</p>}
               </form>

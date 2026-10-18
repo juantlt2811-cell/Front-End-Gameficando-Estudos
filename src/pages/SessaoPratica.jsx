@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import Editor from "@monaco-editor/react";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
@@ -120,8 +121,11 @@ export function SessaoPratica() {
         <Link to="/materias">← Voltar</Link>
         <h1>Sessão concluída!</h1>
         <p>Questões respondidas: {resumoFinal.totalRespondidas}</p>
-        <p>Acertos: {resumoFinal.totalAcertos}</p>
-        <p>Percentual de acerto: {resumoFinal.percentualAcerto.toFixed(0)}%</p>
+        <p>Nota média: {resumoFinal.notaMedia.toFixed(0)}%</p>
+        <p>
+          Aprovação total: {resumoFinal.totalAcertos} de{" "}
+          {resumoFinal.totalRespondidas}
+        </p>
         <p>Ofensiva atual: {resumoFinal.ofensivaAtual}</p>
       </div>
     );
@@ -161,6 +165,22 @@ export function SessaoPratica() {
                     </label>
                   );
                 })}
+              </div>
+            ) : questaoAtual.tipo === TIPO_ATIVIDADE.CODIGO ? (
+              <div className="editor-codigo">
+                <Editor
+                  height="220px"
+                  defaultLanguage="python"
+                  theme="vs-dark"
+                  value={resposta}
+                  onChange={(valor) => setResposta(valor || "")}
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    automaticLayout: true,
+                    tabSize: 2,
+                  }}
+                />
               </div>
             ) : (
               <textarea
