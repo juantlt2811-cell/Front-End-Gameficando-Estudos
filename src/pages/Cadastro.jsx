@@ -20,10 +20,11 @@ export function Cadastro() {
     setErro(null);
     setEnviando(true);
     try {
+      // O papel NÃO é enviado: o servidor cria sempre um Aluno e só promove
+      // a Professor se o código informado for o correto.
       const resposta = await fetch(`${API_BASE_URL}/api/auth/cadastrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // O papel é decidido pelo servidor: sem código => Aluno.
         body: JSON.stringify({
           nome,
           email,
@@ -58,17 +59,20 @@ export function Cadastro() {
         value={nome}
         onChange={(e) => setNome(e.target.value)}
         placeholder="Nome"
+        maxLength={100}
       />
       <input
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Email"
+        maxLength={150}
       />
       <input
         type="password"
         value={senha}
         onChange={(e) => setSenha(e.target.value)}
         placeholder="Senha (mín. 8, com maiúscula, minúscula e número)"
+        maxLength={128}
       />
 
       <label>
@@ -95,6 +99,7 @@ export function Cadastro() {
           onChange={(e) => setCodigoProfessor(e.target.value)}
           placeholder="Código de professor (fornecido pela instituição)"
           autoComplete="off"
+          maxLength={200}
         />
       )}
 
