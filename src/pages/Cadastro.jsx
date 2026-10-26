@@ -9,6 +9,7 @@ export function Cadastro() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState(TIPO_USUARIO.ALUNO);
+  const [codigoProfessor, setCodigoProfessor] = useState("");
   const [erro, setErro] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const { login } = useAuth();
@@ -19,14 +20,17 @@ export function Cadastro() {
     setErro(null);
     setEnviando(true);
     try {
-      const resposta = await fetch(
-        `${API_BASE_URL}/api/auth/cadastrar`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nome, email, senha, tipoUsuario }),
-        },
-      );
+      const resposta = await fetch(`${API_BASE_URL}/api/auth/cadastrar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          email,
+          senha,
+          codigoProfessor:
+            tipoUsuario === TIPO_USUARIO.PROFESSOR ? codigoProfessor : null,
+        }),
+      });
       const dados = await resposta.json();
 
       if (!resposta.ok) {
@@ -53,17 +57,20 @@ export function Cadastro() {
         value={nome}
         onChange={(e) => setNome(e.target.value)}
         placeholder="Nome"
+        maxLength={100}
       />
       <input
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Email"
+        maxLength={150}
       />
       <input
         type="password"
         value={senha}
         onChange={(e) => setSenha(e.target.value)}
         placeholder="Senha (mín. 8, com maiúscula, minúscula e número)"
+        maxLength={128}
       />
 
       <label>
@@ -82,6 +89,17 @@ export function Cadastro() {
         />
         Professor
       </label>
+
+      {tipoUsuario === TIPO_USUARIO.PROFESSOR && (
+        <input
+          type="password"
+          value={codigoProfessor}
+          onChange={(e) => setCodigoProfessor(e.target.value)}
+          placeholder="Código de professor (fornecido pela instituição)"
+          autoComplete="off"
+          maxLength={200}
+        />
+      )}
 
       {erro && <p>{erro}</p>}
       <button type="submit" disabled={enviando}>
