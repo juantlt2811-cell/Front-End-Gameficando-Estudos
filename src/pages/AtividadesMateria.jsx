@@ -248,6 +248,7 @@ export function AtividadesMateria() {
                   onClick={() => {
                     setIdTestando(atividade.id);
                     setResultadoTeste(null);
+                    setRespostaTeste("");
                   }}
                 >
                   Testar
@@ -327,7 +328,25 @@ export function AtividadesMateria() {
             )}
             {idTestando === atividade.id && (
               <form onSubmit={(e) => handleTestar(e, atividade.id)}>
-                {atividade.tipo === "Codigo" ? (
+                {atividade.tipo === "MultiplaEscolha" ? (
+                  <div className="opcoes-teste">
+                    {atividade.alternativas.map((alt, i) => {
+                      const letra = alt.trim().charAt(0);
+                      return (
+                        <label key={i} className="opcao-teste">
+                          <input
+                            type="radio"
+                            name={`resposta-teste-${atividade.id}`}
+                            value={letra}
+                            checked={respostaTeste === letra}
+                            onChange={(e) => setRespostaTeste(e.target.value)}
+                          />
+                          {alt}
+                        </label>
+                      );
+                    })}
+                  </div>
+                ) : atividade.tipo === "Codigo" ? (
                   <div className="editor-codigo">
                     <Editor
                       height="160px"

@@ -198,11 +198,11 @@ export function SessaoPratica() {
         {!resultado ? (
           <form onSubmit={handleResponder}>
             {questaoAtual.tipo === TIPO_ATIVIDADE.MULTIPLA_ESCOLHA ? (
-              <div>
+              <div className="opcoes-teste">
                 {questaoAtual.alternativas.map((alt, i) => {
                   const letra = alt.trim().charAt(0);
                   return (
-                    <label key={i} style={{ display: "block" }}>
+                    <label key={i} className="opcao-teste">
                       <input
                         type="radio"
                         name="alternativa"

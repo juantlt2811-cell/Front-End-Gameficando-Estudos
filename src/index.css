@@ -785,3 +785,45 @@ tr.linha-primeiro-lugar td:first-child {
 .cartao-auth h1 {
   text-align: center;
 }
+/* ---------- editor de código (Monaco) ---------- */
+
+.editor-codigo {
+  margin: 12px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+/* ---------- alternativas clicáveis (Testar / Sessão prática) ---------- */
+
+.opcoes-teste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+.opcao-teste {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.opcao-teste:hover {
+  border-color: var(--tinta-clara);
+}
+
+.opcao-teste:has(input:checked) {
+  border-color: var(--tinta-clara);
+  background: color-mix(in srgb, var(--tinta-clara) 12%, var(--superficie));
+}
+
+.opcao-teste input {
+  width: auto;
+  margin: 0;
+}
