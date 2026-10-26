@@ -20,8 +20,6 @@ export function Cadastro() {
     setErro(null);
     setEnviando(true);
     try {
-      // O papel NÃO é enviado: o servidor cria sempre um Aluno e só promove
-      // a Professor se o código informado for o correto.
       const resposta = await fetch(`${API_BASE_URL}/api/auth/cadastrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
