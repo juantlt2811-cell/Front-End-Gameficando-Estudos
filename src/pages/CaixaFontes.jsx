@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
 export function CaixaFontes() {
   const { id } = useParams();
@@ -30,7 +31,7 @@ export function CaixaFontes() {
         throw new Error(dados.erro || "Não foi possível carregar.");
       setMateriais(dados);
     } catch (e) {
-      setErro(e.message);
+      setErro(mensagemErro(e));
     } finally {
       setCarregando(false);
     }
@@ -65,7 +66,7 @@ export function CaixaFontes() {
       setTextoCompleto("");
       carregarMateriais();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     } finally {
       setEnviandoTexto(false);
     }
@@ -96,7 +97,7 @@ export function CaixaFontes() {
       e.target.reset();
       carregarMateriais();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     } finally {
       setEnviandoArquivo(false);
     }
@@ -120,7 +121,7 @@ export function CaixaFontes() {
       }
       carregarMateriais();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     }
   }
 
@@ -155,7 +156,7 @@ export function CaixaFontes() {
         </button>
       </form>
 
-      {erro && <p>{erro}</p>}
+      {erro && <p className="erro">{erro}</p>}
 
       <h3>Materiais já processados</h3>
       {carregando && <p>Carregando...</p>}
@@ -164,9 +165,14 @@ export function CaixaFontes() {
         {materiais.map((m) => (
           <li key={m.documentoId}>
             {m.tituloMaterial} ({m.quantidadeChunks} trechos)
-            <button onClick={() => handleRemover(m.documentoId)}>
-              Remover
-            </button>
+            <div className="acoes-item">
+              <button
+                className="botao-perigo"
+                onClick={() => handleRemover(m.documentoId)}
+              >
+                Remover
+              </button>
+            </div>
           </li>
         ))}
       </ul>

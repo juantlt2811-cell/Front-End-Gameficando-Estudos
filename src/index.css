@@ -455,14 +455,6 @@ body {
     border-left: none;
   }
 }
-.alternador-visualizacao {
-  display: flex;
-  width: fit-content;
-  border: 1px solid var(--borda);
-  border-radius: var(--raio-pequeno);
-  overflow: hidden;
-  margin-bottom: 20px;
-}
 
 .alternador-visualizacao button {
   background: var(--superficie);
@@ -542,9 +534,254 @@ body {
   text-decoration: none;
   color: #fff;
 }
-.editor-codigo {
-  margin: 12px 0;
-  border-radius: 8px;
+button.botao-perigo {
+  background: transparent;
+  border-color: var(--erro);
+  color: var(--erro);
+}
+
+button.botao-perigo:hover {
+  background: var(--erro);
+  border-color: var(--erro);
+  color: #fff;
+}
+
+/* ---------- alvos de clique maiores em listas/cards (Fitts) ---------- */
+
+.acoes-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--borda);
+}
+
+.acoes-item button,
+.acoes-item a {
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+.corpo-atividade {
+  margin-bottom: 4px;
+}
+
+.acoes-item + form {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--borda);
+}
+
+/* ---------- campos com rótulo visível (Jakob) ---------- */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+.campo-senha {
+  position: relative;
+}
+
+.campo-senha input {
+  width: 100%;
+  padding-right: 90px;
+}
+
+.botao-mostrar-senha {
+  position: absolute;
+  right: 6px;
+  top: 28px;
+  background: transparent;
+  border: none;
+  color: var(--tinta-clara);
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  width: auto;
+}
+
+.botao-mostrar-senha:hover {
+  background: transparent;
+  text-decoration: underline;
+}
+
+/* ---------- destaque do 1º lugar (Posição Serial / Von Restorff) ---------- */
+
+tr.linha-primeiro-lugar td {
+  background: color-mix(in srgb, var(--dourado) 15%, var(--superficie));
+  font-weight: 600;
+}
+
+tr.linha-primeiro-lugar td:first-child {
+  color: var(--dourado-escuro);
+}
+
+/* ---------- barra de progresso da sessão prática (Zeigarnik / Gradiente de meta) ---------- */
+
+.progresso-sessao {
+  margin-bottom: 24px;
+}
+
+.progresso-sessao-texto {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin-bottom: 6px;
+}
+
+.barra-progresso {
+  height: 8px;
+  background: var(--borda);
+  border-radius: 999px;
   overflow: hidden;
-  border: 1px solid #333;
+}
+
+.barra-progresso-preenchida {
+  height: 100%;
+  background: var(--dourado);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* ---------- tela final da sessão (Pico-fim) ---------- */
+
+.resumo-sessao {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 28px;
+  margin-top: 8px;
+}
+
+.resumo-sessao-destaque {
+  text-align: center;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.resumo-sessao-nota {
+  font-family: var(--fonte-titulo);
+  font-size: 3rem;
+  font-weight: 600;
+  color: var(--dourado-escuro);
+  line-height: 1;
+}
+
+.resumo-sessao-mensagem {
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+  color: var(--tinta);
+  margin: 8px 0 0;
+}
+
+.resumo-sessao-detalhes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  text-align: center;
+}
+
+.resumo-sessao-item-rotulo {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  margin: 0 0 4px;
+}
+
+.resumo-sessao-item-valor {
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  color: var(--tinta);
+  margin: 0;
+}
+
+/* ---------- alternativas dinâmicas (Tesler) ---------- */
+
+.lista-alternativas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.linha-alternativa {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.linha-alternativa input {
+  flex: 1;
+}
+
+.linha-alternativa button {
+  width: auto;
+  padding: 8px 10px;
+}
+/* .card-materia-acoes agora com linha separadora e links viram botão de contorno */
+.card-materia-acoes {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--borda);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-materia-acoes button {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.card-materia-acoes a {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid var(--tinta-clara);
+  color: var(--tinta-clara);
+}
+
+.card-materia-acoes a:hover {
+  background: var(--tinta-clara);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* ---------- telas de login/cadastro (sem cabeçalho) ---------- */
+
+.pagina-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.cartao-auth {
+  width: 100%;
+  max-width: 420px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 32px;
+}
+
+.cartao-auth form {
+  max-width: none;
+  margin-bottom: 0;
+}
+
+.cartao-auth h1 {
+  text-align: center;
 }

@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
+
+const OPCOES_DIFICULDADE = ["Fácil", "Médio", "Difícil"];
 
 export function CriarMateriaForm({
   onCriada,
@@ -56,11 +59,16 @@ export function CriarMateriaForm({
       setDificuldade("");
       onCriada();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     } finally {
       setEnviando(false);
     }
   }
+
+  const opcoesDificuldade =
+    dificuldade && !OPCOES_DIFICULDADE.includes(dificuldade)
+      ? [...OPCOES_DIFICULDADE, dificuldade]
+      : OPCOES_DIFICULDADE;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -76,12 +84,20 @@ export function CriarMateriaForm({
         onChange={(e) => setCargaHoraria(e.target.value)}
         placeholder="Carga horária"
       />
-      <input
+      <select
         value={dificuldade}
         onChange={(e) => setDificuldade(e.target.value)}
-        placeholder="Dificuldade"
-      />
-      {erro && <p>{erro}</p>}
+      >
+        <option value="" disabled>
+          Selecione a dificuldade
+        </option>
+        {opcoesDificuldade.map((opcao) => (
+          <option key={opcao} value={opcao}>
+            {opcao}
+          </option>
+        ))}
+      </select>
+      {erro && <p className="erro">{erro}</p>}
       <button type="submit" disabled={enviando}>
         {enviando
           ? "Salvando..."

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
 export function EstatisticasMateria() {
   const { id } = useParams();
@@ -23,7 +24,7 @@ export function EstatisticasMateria() {
           throw new Error(dados.erro || "Não foi possível carregar.");
         setEstatisticas(dados);
       } catch (e) {
-        setErro(e.message);
+        setErro(mensagemErro(e));
       } finally {
         setCarregando(false);
       }
@@ -37,7 +38,7 @@ export function EstatisticasMateria() {
       <h1>Estatísticas</h1>
 
       {carregando && <p>Carregando...</p>}
-      {erro && <p>{erro}</p>}
+      {erro && <p className="erro">{erro}</p>}
 
       {estatisticas && estatisticas.length === 0 && (
         <p>Nenhum aluno praticou essa matéria ainda.</p>

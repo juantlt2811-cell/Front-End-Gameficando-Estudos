@@ -5,6 +5,14 @@ import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
+
+function mensagemDesempenho(notaMedia) {
+  if (notaMedia >= 90) return "Mandou muito bem!";
+  if (notaMedia >= 70) return "Boa! Você foi bem.";
+  if (notaMedia >= 40) return "Progredindo — continue praticando.";
+  return "Vale revisar o conteúdo e tentar de novo.";
+}
 
 export function SessaoPratica() {
   const { id } = useParams();
@@ -33,7 +41,7 @@ export function SessaoPratica() {
           throw new Error(dados.erro || "Não foi possível verificar.");
         setConfirmacao(dados);
       } catch (e) {
-        setErro(e.message);
+        setErro(mensagemErro(e));
       } finally {
         setCarregando(false);
       }
@@ -53,7 +61,7 @@ export function SessaoPratica() {
       setSessao(dados);
       setIndiceAtual(0);
     } catch (e) {
-      setErro(e.message);
+      setErro(mensagemErro(e));
     }
   }
 
@@ -77,7 +85,7 @@ export function SessaoPratica() {
         throw new Error(dados.erro || "Não foi possível responder.");
       setResultado(dados);
     } catch (e) {
-      setErro(e.message);
+      setErro(mensagemErro(e));
     } finally {
       setRespondendo(false);
     }
@@ -100,7 +108,7 @@ export function SessaoPratica() {
       if (!resp.ok) throw new Error(dados.erro || "Não foi possível concluir.");
       setResumoFinal(dados);
     } catch (e) {
-      setErro(e.message);
+      setErro(mensagemErro(e));
     }
   }
 
@@ -120,13 +128,38 @@ export function SessaoPratica() {
       <div className="App">
         <Link to="/materias">← Voltar</Link>
         <h1>Sessão concluída!</h1>
-        <p>Questões respondidas: {resumoFinal.totalRespondidas}</p>
-        <p>Nota média: {resumoFinal.notaMedia.toFixed(0)}%</p>
-        <p>
-          Aprovação total: {resumoFinal.totalAcertos} de{" "}
-          {resumoFinal.totalRespondidas}
-        </p>
-        <p>Ofensiva atual: {resumoFinal.ofensivaAtual}</p>
+
+        <div className="resumo-sessao">
+          <div className="resumo-sessao-destaque">
+            <p className="resumo-sessao-nota">
+              {resumoFinal.notaMedia.toFixed(0)}%
+            </p>
+            <p className="resumo-sessao-mensagem">
+              {mensagemDesempenho(resumoFinal.notaMedia)}
+            </p>
+          </div>
+
+          <div className="resumo-sessao-detalhes">
+            <div>
+              <p className="resumo-sessao-item-rotulo">Questões respondidas</p>
+              <p className="resumo-sessao-item-valor">
+                {resumoFinal.totalRespondidas}
+              </p>
+            </div>
+            <div>
+              <p className="resumo-sessao-item-rotulo">Aprovação total</p>
+              <p className="resumo-sessao-item-valor">
+                {resumoFinal.totalAcertos}/{resumoFinal.totalRespondidas}
+              </p>
+            </div>
+            <div>
+              <p className="resumo-sessao-item-rotulo">Ofensiva atual</p>
+              <p className="resumo-sessao-item-valor">
+                {resumoFinal.ofensivaAtual}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -139,9 +172,25 @@ export function SessaoPratica() {
       <div className="App">
         <Link to="/materias">← Voltar</Link>
         <h1>Praticando</h1>
-        <p>
-          Questão {indiceAtual + 1} de {sessao.questoes.length}
-        </p>
+
+        <div className="progresso-sessao">
+          <div className="progresso-sessao-texto">
+            <span>
+              Questão {indiceAtual + 1} de {sessao.questoes.length}
+            </span>
+            <span>
+              {Math.round(((indiceAtual + 1) / sessao.questoes.length) * 100)}%
+            </span>
+          </div>
+          <div className="barra-progresso">
+            <div
+              className="barra-progresso-preenchida"
+              style={{
+                width: `${((indiceAtual + 1) / sessao.questoes.length) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
 
         <h3>{questaoAtual.nome}</h3>
         <p>{questaoAtual.conteudo}</p>
@@ -190,7 +239,7 @@ export function SessaoPratica() {
                 rows={6}
               />
             )}
-            {erro && <p>{erro}</p>}
+            {erro && <p className="erro">{erro}</p>}
             <button type="submit" disabled={respondendo || !resposta}>
               {respondendo ? "Enviando..." : "Responder"}
             </button>
@@ -213,7 +262,7 @@ export function SessaoPratica() {
     <div className="App">
       <Link to="/materias">← Voltar</Link>
       <h1>Praticar</h1>
-      {erro && <p>{erro}</p>}
+      {erro && <p className="erro">{erro}</p>}
       {confirmacao && (
         <>
           <p>Questões disponíveis: {confirmacao.totalQuestoesDisponiveis}</p>

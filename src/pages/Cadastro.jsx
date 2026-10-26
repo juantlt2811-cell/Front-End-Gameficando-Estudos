@@ -3,11 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
 export function Cadastro() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState(TIPO_USUARIO.ALUNO);
   const [codigoProfessor, setCodigoProfessor] = useState("");
   const [erro, setErro] = useState(null);
@@ -44,70 +46,110 @@ export function Cadastro() {
       await login(email, senha);
       navigate("/");
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     } finally {
       setEnviando(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Criar conta</h1>
-      <input
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-        placeholder="Nome"
-        maxLength={100}
-      />
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        maxLength={150}
-      />
-      <input
-        type="password"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-        placeholder="Senha (mín. 8, com maiúscula, minúscula e número)"
-        maxLength={128}
-      />
+    <div className="pagina-auth">
+      <div className="cartao-auth">
+        <form onSubmit={handleSubmit}>
+          <h1>Criar conta</h1>
 
-      <label>
-        <input
-          type="radio"
-          checked={tipoUsuario === TIPO_USUARIO.ALUNO}
-          onChange={() => setTipoUsuario(TIPO_USUARIO.ALUNO)}
-        />
-        Aluno
-      </label>
-      <label>
-        <input
-          type="radio"
-          checked={tipoUsuario === TIPO_USUARIO.PROFESSOR}
-          onChange={() => setTipoUsuario(TIPO_USUARIO.PROFESSOR)}
-        />
-        Professor
-      </label>
+          <div className="campo">
+            <label htmlFor="cadastro-nome">Nome</label>
+            <input
+              id="cadastro-nome"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Seu nome"
+              maxLength={100}
+              autoComplete="name"
+              required
+            />
+          </div>
 
-      {tipoUsuario === TIPO_USUARIO.PROFESSOR && (
-        <input
-          type="password"
-          value={codigoProfessor}
-          onChange={(e) => setCodigoProfessor(e.target.value)}
-          placeholder="Código de professor (fornecido pela instituição)"
-          autoComplete="off"
-          maxLength={200}
-        />
-      )}
+          <div className="campo">
+            <label htmlFor="cadastro-email">Email</label>
+            <input
+              id="cadastro-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="seuemail@exemplo.com"
+              maxLength={150}
+              autoComplete="email"
+              required
+            />
+          </div>
 
-      {erro && <p>{erro}</p>}
-      <button type="submit" disabled={enviando}>
-        {enviando ? "Criando..." : "Criar conta"}
-      </button>
-      <p>
-        Já tem conta? <Link to="/login">Entrar</Link>
-      </p>
-    </form>
+          <div className="campo campo-senha">
+            <label htmlFor="cadastro-senha">Senha</label>
+            <input
+              id="cadastro-senha"
+              type={mostrarSenha ? "text" : "password"}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder="Mín. 8, com maiúscula, minúscula e número"
+              maxLength={128}
+              autoComplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              className="botao-mostrar-senha"
+              onClick={() => setMostrarSenha((v) => !v)}
+            >
+              {mostrarSenha ? "Ocultar" : "Mostrar"}
+            </button>
+          </div>
+
+          <label>
+            <input
+              type="radio"
+              checked={tipoUsuario === TIPO_USUARIO.ALUNO}
+              onChange={() => setTipoUsuario(TIPO_USUARIO.ALUNO)}
+            />
+            Aluno
+          </label>
+          <label>
+            <input
+              type="radio"
+              checked={tipoUsuario === TIPO_USUARIO.PROFESSOR}
+              onChange={() => setTipoUsuario(TIPO_USUARIO.PROFESSOR)}
+            />
+            Professor
+          </label>
+
+          {tipoUsuario === TIPO_USUARIO.PROFESSOR && (
+            <div className="campo">
+              <label htmlFor="cadastro-codigo-professor">
+                Código de professor
+              </label>
+              <input
+                id="cadastro-codigo-professor"
+                type="password"
+                value={codigoProfessor}
+                onChange={(e) => setCodigoProfessor(e.target.value)}
+                placeholder="Fornecido pela instituição"
+                autoComplete="off"
+                maxLength={200}
+                required
+              />
+            </div>
+          )}
+
+          {erro && <p className="erro">{erro}</p>}
+          <button type="submit" disabled={enviando}>
+            {enviando ? "Criando..." : "Criar conta"}
+          </button>
+          <p>
+            Já tem conta? <Link to="/login">Entrar</Link>
+          </p>
+        </form>
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
 export function Ranking() {
   const { fetchAutenticado } = useAuth();
@@ -26,7 +27,7 @@ export function Ranking() {
           throw new Error(dados.erro || "Não foi possível carregar.");
         setRankingOfensiva(dados);
       } catch (e) {
-        setErroOfensiva(e.message);
+        setErroOfensiva(mensagemErro(e));
       } finally {
         setCarregandoOfensiva(false);
       }
@@ -39,9 +40,7 @@ export function Ranking() {
         );
         const dados = await resp.json();
         setMaterias(dados);
-      } catch {
-        // se falhar, só não preenche o seletor de matérias
-      }
+      } catch {}
     }
 
     carregarOfensiva();
@@ -63,7 +62,7 @@ export function Ranking() {
       if (!resp.ok) throw new Error(dados.erro || "Não foi possível carregar.");
       setRankingMateria(dados);
     } catch (e) {
-      setErroMateria(e.message);
+      setErroMateria(mensagemErro(e));
     } finally {
       setCarregandoMateria(false);
     }
@@ -90,7 +89,10 @@ export function Ranking() {
               </thead>
               <tbody>
                 {rankingOfensiva.map((item) => (
-                  <tr key={item.posicao}>
+                  <tr
+                    key={item.posicao}
+                    className={item.posicao === 1 ? "linha-primeiro-lugar" : ""}
+                  >
                     <td>{item.posicao}</td>
                     <td>{item.nome}</td>
                     <td>{item.ofensivaAtual}</td>
@@ -133,7 +135,10 @@ export function Ranking() {
               </thead>
               <tbody>
                 {rankingMateria.map((item) => (
-                  <tr key={item.posicao}>
+                  <tr
+                    key={item.posicao}
+                    className={item.posicao === 1 ? "linha-primeiro-lugar" : ""}
+                  >
                     <td>{item.posicao}</td>
                     <td>{item.nome}</td>
                     <td>

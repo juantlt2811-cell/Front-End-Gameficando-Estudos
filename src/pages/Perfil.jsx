@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
 export function Perfil() {
   const { fetchAutenticado, logout } = useAuth();
@@ -28,7 +29,7 @@ export function Perfil() {
           );
         setDados(dados);
       } catch (e) {
-        setErro(e.message);
+        setErro(mensagemErro(e));
       } finally {
         setCarregando(false);
       }
@@ -68,14 +69,14 @@ export function Perfil() {
       logout();
       navigate("/login");
     } catch (err) {
-      setErroExclusao(err.message);
+      setErroExclusao(mensagemErro(err));
     } finally {
       setExcluindo(false);
     }
   }
 
   if (carregando) return <p>Carregando...</p>;
-  if (erro) return <p>{erro}</p>;
+  if (erro) return <p className="erro">{erro}</p>;
 
   return (
     <div className="App">
@@ -99,7 +100,10 @@ export function Perfil() {
       <hr />
 
       {!mostrarExclusao ? (
-        <button onClick={() => setMostrarExclusao(true)}>
+        <button
+          className="botao-perigo"
+          onClick={() => setMostrarExclusao(true)}
+        >
           Excluir minha conta
         </button>
       ) : (
@@ -110,9 +114,10 @@ export function Perfil() {
             value={senhaConfirmacao}
             onChange={(e) => setSenhaConfirmacao(e.target.value)}
             placeholder="Senha atual"
+            autoComplete="current-password"
           />
-          {erroExclusao && <p>{erroExclusao}</p>}
-          <button type="submit" disabled={excluindo}>
+          {erroExclusao && <p className="erro">{erroExclusao}</p>}
+          <button type="submit" className="botao-perigo" disabled={excluindo}>
             {excluindo ? "Excluindo..." : "Confirmar exclusão"}
           </button>
           <button type="button" onClick={() => setMostrarExclusao(false)}>

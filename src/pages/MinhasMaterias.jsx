@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { ListaMaterias } from "../components/ListaMaterias";
 import { CriarMateriaForm } from "../components/CriarMateriaForm";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
 export function MinhasMaterias() {
   const { fetchAutenticado } = useAuth();
@@ -21,7 +22,7 @@ export function MinhasMaterias() {
       const dados = await resposta.json();
       setMaterias(dados);
     } catch (e) {
-      setErro("Não foi possível carregar suas matérias.");
+      setErro(mensagemErro(e));
     } finally {
       setCarregando(false);
     }
@@ -44,7 +45,7 @@ export function MinhasMaterias() {
       }
       carregarMinhas();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     }
   }
 
@@ -65,7 +66,7 @@ export function MinhasMaterias() {
       />
 
       {carregando && <p>Carregando...</p>}
-      {erro && <p>{erro}</p>}
+      {erro && <p className="erro">{erro}</p>}
       {!carregando && !erro && (
         <ListaMaterias
           materias={materias}

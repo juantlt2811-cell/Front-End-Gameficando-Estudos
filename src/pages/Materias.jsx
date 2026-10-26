@@ -4,6 +4,7 @@ import { ListaMaterias } from "../components/ListaMaterias";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
 export function Materias() {
   const [materias, setMaterias] = useState([]);
@@ -24,7 +25,7 @@ export function Materias() {
       const dados = await resposta.json();
       setMaterias(dados);
     } catch (e) {
-      setErro("Não foi possível carregar as matérias.");
+      setErro(mensagemErro(e));
     } finally {
       setCarregando(false);
     }
@@ -45,7 +46,7 @@ export function Materias() {
       const dados = await resposta.json();
       setResultadosPesquisa(dados);
     } catch (e) {
-      setErro("Não foi possível pesquisar.");
+      setErro(mensagemErro(e));
     } finally {
       setPesquisando(false);
     }

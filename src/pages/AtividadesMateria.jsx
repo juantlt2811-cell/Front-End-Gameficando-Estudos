@@ -5,9 +5,8 @@ import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
 import { API_BASE_URL } from "../constants/api";
+import { mensagemErro } from "../utils/erroRede";
 
-// Tenta adivinhar a linguagem do trecho de código só para colorir a sintaxe.
-// Não é perfeito, mas cobre bem os casos mais comuns gerados pela IA.
 function adivinharLinguagem(codigo) {
   if (!codigo) return "jsx";
   if (/^\s*(def |import |print\()/m.test(codigo)) return "python";
@@ -32,24 +31,22 @@ export function AtividadesMateria() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
 
-  // gerar
   const [tema, setTema] = useState("");
   const [tipoAtividade, setTipoAtividade] = useState(
     TIPO_ATIVIDADE.MULTIPLA_ESCOLHA,
   );
   const [gerando, setGerando] = useState(false);
 
-  // editar
   const [idEditando, setIdEditando] = useState(null);
   const [nomeEdicao, setNomeEdicao] = useState("");
   const [conteudoEdicao, setConteudoEdicao] = useState("");
   const [gabaritoEdicao, setGabaritoEdicao] = useState("");
-  const [alternativasEdicao, setAlternativasEdicao] = useState("");
+  const [alternativasEdicao, setAlternativasEdicao] = useState([]);
 
-  // testar
   const [idTestando, setIdTestando] = useState(null);
   const [respostaTeste, setRespostaTeste] = useState("");
   const [resultadoTeste, setResultadoTeste] = useState(null);
+  const [testando, setTestando] = useState(false);
 
   async function carregarAtividades() {
     setCarregando(true);
@@ -62,7 +59,7 @@ export function AtividadesMateria() {
         throw new Error(dados.erro || "Não foi possível carregar.");
       setAtividades(dados);
     } catch (e) {
-      setErro(e.message);
+      setErro(mensagemErro(e));
     } finally {
       setCarregando(false);
     }
@@ -92,7 +89,7 @@ export function AtividadesMateria() {
       setTema("");
       carregarAtividades();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     } finally {
       setGerando(false);
     }
@@ -103,7 +100,25 @@ export function AtividadesMateria() {
     setNomeEdicao(atividade.nome);
     setConteudoEdicao(atividade.conteudo);
     setGabaritoEdicao("");
-    setAlternativasEdicao((atividade.alternativas || []).join("\n"));
+    setAlternativasEdicao(
+      atividade.alternativas?.length > 0
+        ? [...atividade.alternativas]
+        : ["", ""],
+    );
+  }
+
+  function atualizarAlternativa(indice, valor) {
+    setAlternativasEdicao((atuais) =>
+      atuais.map((a, i) => (i === indice ? valor : a)),
+    );
+  }
+
+  function adicionarAlternativa() {
+    setAlternativasEdicao((atuais) => [...atuais, ""]);
+  }
+
+  function removerAlternativa(indice) {
+    setAlternativasEdicao((atuais) => atuais.filter((_, i) => i !== indice));
   }
 
   async function handleSalvarEdicao(e, atividade) {
@@ -122,10 +137,7 @@ export function AtividadesMateria() {
             gabarito: gabaritoEdicao,
             alternativas:
               atividade.tipo === "MultiplaEscolha"
-                ? alternativasEdicao
-                    .split("\n")
-                    .map((a) => a.trim())
-                    .filter(Boolean)
+                ? alternativasEdicao.map((a) => a.trim()).filter(Boolean)
                 : [],
           }),
         },
@@ -137,7 +149,7 @@ export function AtividadesMateria() {
       setIdEditando(null);
       carregarAtividades();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     }
   }
 
@@ -154,13 +166,14 @@ export function AtividadesMateria() {
       }
       carregarAtividades();
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
     }
   }
 
   async function handleTestar(e, idAtividade) {
     e.preventDefault();
     setResultadoTeste(null);
+    setTestando(true);
     try {
       const resposta = await fetchAutenticado(
         `${API_BASE_URL}/api/atividade/${idAtividade}/testar`,
@@ -175,7 +188,9 @@ export function AtividadesMateria() {
         throw new Error(dados.erro || "Não foi possível testar.");
       setResultadoTeste(dados);
     } catch (err) {
-      setErro(err.message);
+      setErro(mensagemErro(err));
+    } finally {
+      setTestando(false);
     }
   }
 
@@ -210,7 +225,7 @@ export function AtividadesMateria() {
         </>
       )}
 
-      {erro && <p>{erro}</p>}
+      {erro && <p className="erro">{erro}</p>}
       {carregando && <p>Carregando...</p>}
 
       <ul>
@@ -218,7 +233,7 @@ export function AtividadesMateria() {
           <li key={atividade.id}>
             <strong>{atividade.nome}</strong> ({atividade.tipo}){" "}
             {!atividade.ativa && "[inativa]"}
-            <p>{atividade.conteudo}</p>
+            <p className="corpo-atividade">{atividade.conteudo}</p>
             {atividade.alternativas?.length > 0 && (
               <ul>
                 {atividade.alternativas.map((alt, i) => (
@@ -227,11 +242,8 @@ export function AtividadesMateria() {
               </ul>
             )}
             {ehProfessor && (
-              <>
+              <div className="acoes-item">
                 <button onClick={() => iniciarEdicao(atividade)}>Editar</button>
-                <button onClick={() => handleExcluir(atividade.id)}>
-                  Excluir
-                </button>
                 <button
                   onClick={() => {
                     setIdTestando(atividade.id);
@@ -240,7 +252,13 @@ export function AtividadesMateria() {
                 >
                   Testar
                 </button>
-              </>
+                <button
+                  className="botao-perigo"
+                  onClick={() => handleExcluir(atividade.id)}
+                >
+                  Excluir
+                </button>
+              </div>
             )}
             {idEditando === atividade.id && (
               <form onSubmit={(e) => handleSalvarEdicao(e, atividade)}>
@@ -253,12 +271,30 @@ export function AtividadesMateria() {
                   onChange={(e) => setConteudoEdicao(e.target.value)}
                 />
                 {atividade.tipo === "MultiplaEscolha" && (
-                  <textarea
-                    value={alternativasEdicao}
-                    onChange={(e) => setAlternativasEdicao(e.target.value)}
-                    placeholder="Uma alternativa por linha, ex: A) Texto"
-                    rows={4}
-                  />
+                  <div className="lista-alternativas">
+                    {alternativasEdicao.map((alt, i) => (
+                      <div className="linha-alternativa" key={i}>
+                        <input
+                          value={alt}
+                          onChange={(e) =>
+                            atualizarAlternativa(i, e.target.value)
+                          }
+                          placeholder={`Alternativa (ex: A) Texto)`}
+                        />
+                        <button
+                          type="button"
+                          className="botao-perigo"
+                          onClick={() => removerAlternativa(i)}
+                          disabled={alternativasEdicao.length <= 2}
+                        >
+                          Remover
+                        </button>
+                      </div>
+                    ))}
+                    <button type="button" onClick={adicionarAlternativa}>
+                      + Adicionar alternativa
+                    </button>
+                  </div>
                 )}
                 {atividade.tipo === "Codigo" ? (
                   <div className="editor-codigo">
@@ -314,7 +350,9 @@ export function AtividadesMateria() {
                     placeholder="Resposta de teste"
                   />
                 )}
-                <button type="submit">Enviar teste</button>
+                <button type="submit" disabled={testando}>
+                  {testando ? "Testando..." : "Enviar teste"}
+                </button>
                 {resultadoTeste && <p>{resultadoTeste.feedback}</p>}
               </form>
             )}
