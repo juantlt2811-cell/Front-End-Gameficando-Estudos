@@ -4,14 +4,24 @@ import Editor from "@monaco-editor/react";
 import { useAuth } from "../context/AuthContext";
 import { TIPO_USUARIO } from "../constants/tipoUsuario";
 import { TIPO_ATIVIDADE } from "../constants/tipoAtividade";
+import { TAMANHOS_SESSAO } from "../constants/tamanhoSessao";
 import { API_BASE_URL } from "../constants/api";
 import { mensagemErro } from "../utils/erroRede";
+import { buscarModulos } from "../utils/modulo";
 
 function mensagemDesempenho(notaMedia) {
   if (notaMedia >= 90) return "Mandou muito bem!";
   if (notaMedia >= 70) return "Boa! Você foi bem.";
   if (notaMedia >= 40) return "Progredindo — continue praticando.";
   return "Vale revisar o conteúdo e tentar de novo.";
+}
+
+function construirQuery(idModulo, tamanho) {
+  const params = new URLSearchParams();
+  if (idModulo) params.set("idModulo", idModulo);
+  if (tamanho) params.set("tamanho", tamanho);
+  const texto = params.toString();
+  return texto ? `?${texto}` : "";
 }
 
 export function SessaoPratica() {
@@ -22,6 +32,10 @@ export function SessaoPratica() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
 
+  const [modulos, setModulos] = useState([]);
+  const [idModuloEscolhido, setIdModuloEscolhido] = useState("");
+  const [tamanhoEscolhido, setTamanhoEscolhido] = useState("Curta");
+
   const [confirmacao, setConfirmacao] = useState(null);
   const [sessao, setSessao] = useState(null);
   const [indiceAtual, setIndiceAtual] = useState(0);
@@ -31,10 +45,24 @@ export function SessaoPratica() {
   const [resumoFinal, setResumoFinal] = useState(null);
 
   useEffect(() => {
-    async function carregarConfirmacao() {
+    async function carregarModulosLista() {
       try {
+        const dados = await buscarModulos(idMateria, fetchAutenticado);
+        setModulos(dados);
+      } catch (e) {
+        setErro(mensagemErro(e));
+      }
+    }
+    carregarModulosLista();
+  }, [idMateria]);
+
+  useEffect(() => {
+    async function carregarConfirmacao() {
+      setCarregando(true);
+      try {
+        const query = construirQuery(idModuloEscolhido, tamanhoEscolhido);
         const resp = await fetchAutenticado(
-          `${API_BASE_URL}/api/sessaopratica/confirmar-inicio/${idMateria}`,
+          `${API_BASE_URL}/api/sessaopratica/confirmar-inicio/${idMateria}${query}`,
         );
         const dados = await resp.json();
         if (!resp.ok)
@@ -47,13 +75,14 @@ export function SessaoPratica() {
       }
     }
     carregarConfirmacao();
-  }, [idMateria]);
+  }, [idMateria, idModuloEscolhido, tamanhoEscolhido]);
 
   async function handleIniciar() {
     setErro(null);
     try {
+      const query = construirQuery(idModuloEscolhido, tamanhoEscolhido);
       const resp = await fetchAutenticado(
-        `${API_BASE_URL}/api/sessaopratica/iniciar/${idMateria}`,
+        `${API_BASE_URL}/api/sessaopratica/iniciar/${idMateria}${query}`,
         { method: "POST" },
       );
       const dados = await resp.json();
@@ -120,8 +149,6 @@ export function SessaoPratica() {
       </div>
     );
   }
-
-  if (carregando) return <p>Carregando...</p>;
 
   if (resumoFinal) {
     return (
@@ -258,24 +285,89 @@ export function SessaoPratica() {
     );
   }
 
+  const modulosComAtividade = modulos.filter(
+    (m) => m.quantidadeAtividades > 0,
+  );
+
   return (
     <div className="App">
       <Link to="/materias">← Voltar</Link>
       <h1>Praticar</h1>
       {erro && <p className="erro">{erro}</p>}
-      {confirmacao && (
-        <>
-          <p>Questões disponíveis: {confirmacao.totalQuestoesDisponiveis}</p>
-          <p>
-            Tentativas restantes hoje: {confirmacao.tentativasRestantesHoje}
-          </p>
-          {confirmacao.podeIniciar ? (
-            <button onClick={handleIniciar}>Iniciar prática</button>
-          ) : (
-            <p>{confirmacao.motivo}</p>
+
+      <div className="selecao-sessao">
+        <div className="selecao-sessao-campo">
+          <label htmlFor="selecao-modulo">O que você quer praticar?</label>
+          <select
+            id="selecao-modulo"
+            value={idModuloEscolhido}
+            onChange={(e) => setIdModuloEscolhido(e.target.value)}
+          >
+            <option value="">Matéria inteira</option>
+            {modulos.map((modulo) => (
+              <option
+                key={modulo.id}
+                value={modulo.id}
+                disabled={modulo.quantidadeAtividades === 0}
+              >
+                {modulo.nome}
+                {modulo.quantidadeAtividades === 0
+                  ? " (sem atividades)"
+                  : ""}
+              </option>
+            ))}
+          </select>
+          {modulos.length > 0 && modulosComAtividade.length === 0 && (
+            <p className="resumo-confirmacao">
+              Nenhum módulo tem atividades ainda — praticando a matéria
+              inteira.
+            </p>
           )}
-        </>
-      )}
+        </div>
+
+        <div className="selecao-sessao-campo">
+          <label>Tamanho da sessão</label>
+          <div className="opcoes-tamanho">
+            {TAMANHOS_SESSAO.map((t) => {
+              const desabilitado =
+                t.valor !== "Todas" &&
+                confirmacao &&
+                t.maximo > confirmacao.totalQuestoesNoRecorte;
+              const rotulo =
+                t.valor === "Todas" && confirmacao
+                  ? `Todas (${confirmacao.totalQuestoesNoRecorte})`
+                  : t.rotulo;
+              return (
+                <label key={t.valor} className="opcao-tamanho">
+                  <input
+                    type="radio"
+                    name="tamanho-sessao"
+                    value={t.valor}
+                    checked={tamanhoEscolhido === t.valor}
+                    disabled={desabilitado}
+                    onChange={(e) => setTamanhoEscolhido(e.target.value)}
+                  />
+                  {rotulo}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        {carregando && <p>Verificando...</p>}
+        {confirmacao && !carregando && (
+          <>
+            <p className="resumo-confirmacao">
+              Tentativas restantes hoje: {confirmacao.tentativasRestantesHoje}
+            </p>
+            {confirmacao.podeIniciar ? (
+              <button onClick={handleIniciar}>Iniciar prática</button>
+            ) : (
+              <p className="erro">{confirmacao.motivo}</p>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

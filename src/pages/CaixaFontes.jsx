@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../constants/api";
 import { mensagemErro } from "../utils/erroRede";
+import { buscarModulos, nomeModulo } from "../utils/modulo";
 
 export function CaixaFontes() {
   const { id } = useParams();
@@ -13,11 +14,15 @@ export function CaixaFontes() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
 
+  const [modulos, setModulos] = useState([]);
+
   const [tituloTexto, setTituloTexto] = useState("");
   const [textoCompleto, setTextoCompleto] = useState("");
+  const [idModuloTexto, setIdModuloTexto] = useState("");
   const [enviandoTexto, setEnviandoTexto] = useState(false);
 
   const [arquivo, setArquivo] = useState(null);
+  const [idModuloArquivo, setIdModuloArquivo] = useState("");
   const [enviandoArquivo, setEnviandoArquivo] = useState(false);
 
   async function carregarMateriais() {
@@ -37,8 +42,18 @@ export function CaixaFontes() {
     }
   }
 
+  async function carregarModulosLista() {
+    try {
+      const dados = await buscarModulos(idMateria, fetchAutenticado);
+      setModulos(dados);
+    } catch (e) {
+      setErro(mensagemErro(e));
+    }
+  }
+
   useEffect(() => {
     carregarMateriais();
+    carregarModulosLista();
   }, [idMateria]);
 
   async function handleEnviarTexto(e) {
@@ -55,6 +70,7 @@ export function CaixaFontes() {
             idMateria,
             tituloMaterial: tituloTexto,
             textoCompleto,
+            idModulo: idModuloTexto ? Number(idModuloTexto) : null,
           }),
         },
       );
@@ -64,7 +80,9 @@ export function CaixaFontes() {
 
       setTituloTexto("");
       setTextoCompleto("");
+      setIdModuloTexto("");
       carregarMateriais();
+      carregarModulosLista();
     } catch (err) {
       setErro(mensagemErro(err));
     } finally {
@@ -81,6 +99,7 @@ export function CaixaFontes() {
       const formData = new FormData();
       formData.append("idMateria", idMateria);
       formData.append("arquivo", arquivo);
+      if (idModuloArquivo) formData.append("idModulo", idModuloArquivo);
 
       const resposta = await fetchAutenticado(
         `${API_BASE_URL}/api/caixafontes/upload`,
@@ -94,8 +113,10 @@ export function CaixaFontes() {
         throw new Error(dados.erro || "Não foi possível processar o arquivo.");
 
       setArquivo(null);
+      setIdModuloArquivo("");
       e.target.reset();
       carregarMateriais();
+      carregarModulosLista();
     } catch (err) {
       setErro(mensagemErro(err));
     } finally {
@@ -120,6 +141,29 @@ export function CaixaFontes() {
         throw new Error(dados.erro || "Não foi possível remover.");
       }
       carregarMateriais();
+      carregarModulosLista();
+    } catch (err) {
+      setErro(mensagemErro(err));
+    }
+  }
+
+  async function handleMoverMaterial(documentoId, valorSelect) {
+    setErro(null);
+    try {
+      const idModulo = valorSelect === "" ? null : Number(valorSelect);
+      const resposta = await fetchAutenticado(
+        `${API_BASE_URL}/api/caixafontes/mover-material`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idMateria, documentoId, idModulo }),
+        },
+      );
+      const dados = await resposta.json();
+      if (!resposta.ok)
+        throw new Error(dados.erro || "Não foi possível mover o material.");
+      carregarMateriais();
+      carregarModulosLista();
     } catch (err) {
       setErro(mensagemErro(err));
     }
@@ -143,6 +187,17 @@ export function CaixaFontes() {
           placeholder="Cole o texto completo aqui"
           rows={6}
         />
+        <select
+          value={idModuloTexto}
+          onChange={(e) => setIdModuloTexto(e.target.value)}
+        >
+          <option value="">Sem módulo</option>
+          {modulos.map((modulo) => (
+            <option key={modulo.id} value={modulo.id}>
+              {modulo.nome}
+            </option>
+          ))}
+        </select>
         <button type="submit" disabled={enviandoTexto}>
           {enviandoTexto ? "Processando..." : "Adicionar texto"}
         </button>
@@ -151,6 +206,17 @@ export function CaixaFontes() {
       <h3>Enviar arquivo</h3>
       <form onSubmit={handleEnviarArquivo}>
         <input type="file" onChange={(e) => setArquivo(e.target.files[0])} />
+        <select
+          value={idModuloArquivo}
+          onChange={(e) => setIdModuloArquivo(e.target.value)}
+        >
+          <option value="">Sem módulo</option>
+          {modulos.map((modulo) => (
+            <option key={modulo.id} value={modulo.id}>
+              {modulo.nome}
+            </option>
+          ))}
+        </select>
         <button type="submit" disabled={enviandoArquivo || !arquivo}>
           {enviandoArquivo ? "Processando..." : "Enviar arquivo"}
         </button>
@@ -164,6 +230,10 @@ export function CaixaFontes() {
       <ul>
         {materiais.map((m) => (
           <li key={m.documentoId}>
+            <span className="badge-modulo">
+              {nomeModulo(m.idModulo, modulos)}
+            </span>
+            <br />
             {m.tituloMaterial} ({m.quantidadeChunks} trechos)
             <div className="acoes-item">
               <button
@@ -172,6 +242,25 @@ export function CaixaFontes() {
               >
                 Remover
               </button>
+            </div>
+            <div className="mover-modulo">
+              <label htmlFor={`mover-material-${m.documentoId}`}>
+                Mover para:
+              </label>
+              <select
+                id={`mover-material-${m.documentoId}`}
+                value={m.idModulo ?? ""}
+                onChange={(e) =>
+                  handleMoverMaterial(m.documentoId, e.target.value)
+                }
+              >
+                <option value="">Sem módulo</option>
+                {modulos.map((modulo) => (
+                  <option key={modulo.id} value={modulo.id}>
+                    {modulo.nome}
+                  </option>
+                ))}
+              </select>
             </div>
           </li>
         ))}

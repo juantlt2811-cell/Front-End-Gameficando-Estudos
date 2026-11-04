@@ -827,3 +827,165 @@ tr.linha-primeiro-lugar td:first-child {
   width: auto;
   margin: 0;
 }
+
+/* ---------- módulos (professor) ---------- */
+
+.secao-modulos {
+  margin: 24px 0 32px;
+  padding: 20px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+}
+
+.secao-modulos p {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.form-novo-modulo {
+  display: flex;
+  gap: 8px;
+  max-width: 440px;
+  margin: 0 0 16px;
+}
+
+.form-novo-modulo input {
+  flex: 1;
+}
+
+.form-novo-modulo button {
+  width: auto;
+}
+
+.lista-modulos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modulo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  flex-wrap: wrap;
+  max-width: none;
+  margin: 0;
+}
+
+.modulo-item-nome {
+  font-weight: 500;
+  color: var(--tinta);
+}
+
+.modulo-item-contagem {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+.modulo-item-acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.modulo-item-acoes button {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.modulo-item input {
+  flex: 1;
+}
+
+/* ---------- selo de módulo e ação de mover (atividades/materiais) ---------- */
+
+.badge-modulo {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tinta-clara);
+  background: color-mix(in srgb, var(--tinta-clara) 12%, var(--superficie));
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-bottom: 8px;
+}
+
+.mover-modulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.mover-modulo label {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+
+.mover-modulo select {
+  width: auto;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+
+/* ---------- escolha de sessão: módulo + tamanho (aluno) ---------- */
+
+.selecao-sessao {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 440px;
+}
+
+.selecao-sessao-campo label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+  margin-bottom: 6px;
+}
+
+.opcoes-tamanho {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.opcao-tamanho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.opcao-tamanho:has(input:checked) {
+  border-color: var(--tinta-clara);
+  background: color-mix(in srgb, var(--tinta-clara) 12%, var(--superficie));
+}
+
+.opcao-tamanho:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.opcao-tamanho input {
+  width: auto;
+  margin: 0;
+}
+
+.resumo-confirmacao {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
