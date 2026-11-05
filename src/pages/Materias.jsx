@@ -69,6 +69,8 @@ export function Materias() {
 
       <form onSubmit={handlePesquisar}>
         <input
+          id="pesquisa-materia"
+          name="termo"
           value={termoPesquisa}
           onChange={(e) => setTermoPesquisa(e.target.value)}
           placeholder="Pesquisar matéria por nome"

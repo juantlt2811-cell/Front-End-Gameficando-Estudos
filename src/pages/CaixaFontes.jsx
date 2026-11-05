@@ -177,17 +177,23 @@ export function CaixaFontes() {
       <h3>Adicionar texto</h3>
       <form onSubmit={handleEnviarTexto}>
         <input
+          id="fonte-titulo"
+          name="tituloMaterial"
           value={tituloTexto}
           onChange={(e) => setTituloTexto(e.target.value)}
           placeholder="Título do material"
         />
         <textarea
+          id="fonte-texto"
+          name="textoCompleto"
           value={textoCompleto}
           onChange={(e) => setTextoCompleto(e.target.value)}
           placeholder="Cole o texto completo aqui"
           rows={6}
         />
         <select
+          id="fonte-modulo-texto"
+          name="idModulo"
           value={idModuloTexto}
           onChange={(e) => setIdModuloTexto(e.target.value)}
         >
@@ -205,8 +211,15 @@ export function CaixaFontes() {
 
       <h3>Enviar arquivo</h3>
       <form onSubmit={handleEnviarArquivo}>
-        <input type="file" onChange={(e) => setArquivo(e.target.files[0])} />
+        <input
+          id="fonte-arquivo"
+          name="arquivo"
+          type="file"
+          onChange={(e) => setArquivo(e.target.files[0])}
+        />
         <select
+          id="fonte-modulo-arquivo"
+          name="idModulo"
           value={idModuloArquivo}
           onChange={(e) => setIdModuloArquivo(e.target.value)}
         >

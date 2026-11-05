@@ -340,6 +340,8 @@ export function AtividadesMateria() {
 
           <form className="form-novo-modulo" onSubmit={handleCriarModulo}>
             <input
+              id="novo-modulo-nome"
+              name="nomeModulo"
               value={novoModuloNome}
               onChange={(e) => setNovoModuloNome(e.target.value)}
               placeholder="Nome do novo módulo"
@@ -362,6 +364,8 @@ export function AtividadesMateria() {
                     onSubmit={(e) => handleRenomearModulo(e, modulo.id)}
                   >
                     <input
+                      id={`renomear-modulo-${modulo.id}`}
+                      name="nomeModulo"
                       value={nomeRenomeio}
                       onChange={(e) => setNomeRenomeio(e.target.value)}
                       maxLength={100}
@@ -414,11 +418,15 @@ export function AtividadesMateria() {
           <h3>Gerar atividade com IA</h3>
           <form onSubmit={handleGerar}>
             <input
+              id="gerar-tema"
+              name="tema"
               value={tema}
               onChange={(e) => setTema(e.target.value)}
               placeholder="Tema"
             />
             <select
+              id="gerar-tipo"
+              name="tipoAtividade"
               value={tipoAtividade}
               onChange={(e) => setTipoAtividade(Number(e.target.value))}
             >
@@ -429,6 +437,8 @@ export function AtividadesMateria() {
               <option value={TIPO_ATIVIDADE.CODIGO}>Código</option>
             </select>
             <select
+              id="gerar-modulo"
+              name="idModulo"
               value={idModuloGerar}
               onChange={(e) => setIdModuloGerar(e.target.value)}
             >
@@ -531,10 +541,14 @@ export function AtividadesMateria() {
             {idEditando === atividade.id && (
               <form onSubmit={(e) => handleSalvarEdicao(e, atividade)}>
                 <input
+                  id={`edicao-nome-${atividade.id}`}
+                  name="nome"
                   value={nomeEdicao}
                   onChange={(e) => setNomeEdicao(e.target.value)}
                 />
                 <textarea
+                  id={`edicao-conteudo-${atividade.id}`}
+                  name="conteudo"
                   value={conteudoEdicao}
                   onChange={(e) => setConteudoEdicao(e.target.value)}
                 />
@@ -543,6 +557,8 @@ export function AtividadesMateria() {
                     {alternativasEdicao.map((alt, i) => (
                       <div className="linha-alternativa" key={i}>
                         <input
+                          id={`edicao-alternativa-${atividade.id}-${i}`}
+                          name={`alternativa-${i}`}
                           value={alt}
                           onChange={(e) =>
                             atualizarAlternativa(i, e.target.value)
@@ -582,6 +598,8 @@ export function AtividadesMateria() {
                   </div>
                 ) : (
                   <textarea
+                    id={`edicao-gabarito-${atividade.id}`}
+                    name="gabarito"
                     value={gabaritoEdicao}
                     onChange={(e) => setGabaritoEdicao(e.target.value)}
                     placeholder="Gabarito (obrigatório reescrever, o backend não devolve o atual)"
@@ -631,6 +649,8 @@ export function AtividadesMateria() {
                   </div>
                 ) : (
                   <input
+                    id={`teste-resposta-${atividade.id}`}
+                    name="respostaTeste"
                     value={respostaTeste}
                     onChange={(e) => setRespostaTeste(e.target.value)}
                     placeholder="Resposta de teste"

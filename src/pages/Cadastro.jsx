@@ -109,6 +109,7 @@ export function Cadastro() {
           <label>
             <input
               type="radio"
+              name="tipoUsuario"
               checked={tipoUsuario === TIPO_USUARIO.ALUNO}
               onChange={() => setTipoUsuario(TIPO_USUARIO.ALUNO)}
             />
@@ -117,6 +118,7 @@ export function Cadastro() {
           <label>
             <input
               type="radio"
+              name="tipoUsuario"
               checked={tipoUsuario === TIPO_USUARIO.PROFESSOR}
               onChange={() => setTipoUsuario(TIPO_USUARIO.PROFESSOR)}
             />

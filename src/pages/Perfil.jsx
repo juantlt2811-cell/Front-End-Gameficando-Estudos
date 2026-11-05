@@ -110,6 +110,8 @@ export function Perfil() {
         <form onSubmit={handleExcluirConta}>
           <p>Essa ação é irreversível. Digite sua senha pra confirmar.</p>
           <input
+            id="perfil-senha-confirmacao"
+            name="senhaAtual"
             type="password"
             value={senhaConfirmacao}
             onChange={(e) => setSenhaConfirmacao(e.target.value)}

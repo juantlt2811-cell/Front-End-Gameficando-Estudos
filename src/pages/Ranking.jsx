@@ -107,6 +107,8 @@ export function Ranking() {
         <section className="ranking-coluna">
           <h3>Por matéria</h3>
           <select
+            id="ranking-materia"
+            name="idMateria"
             value={idMateriaSelecionada}
             onChange={(e) => carregarRankingMateria(e.target.value)}
           >

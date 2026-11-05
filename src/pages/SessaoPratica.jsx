@@ -260,6 +260,8 @@ export function SessaoPratica() {
               </div>
             ) : (
               <textarea
+                id="resposta-texto"
+                name="resposta"
                 value={resposta}
                 onChange={(e) => setResposta(e.target.value)}
                 placeholder="Digite sua resposta"

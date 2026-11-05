@@ -74,17 +74,23 @@ export function CriarMateriaForm({
     <form onSubmit={handleSubmit}>
       <h3>{editando ? "Editar matéria" : "Criar matéria"}</h3>
       <input
+        id="materia-nome"
+        name="nome"
         value={nome}
         onChange={(e) => setNome(e.target.value)}
         placeholder="Nome"
       />
       <input
+        id="materia-carga-horaria"
+        name="cargaHoraria"
         type="number"
         value={cargaHoraria}
         onChange={(e) => setCargaHoraria(e.target.value)}
         placeholder="Carga horária"
       />
       <select
+        id="materia-dificuldade"
+        name="dificuldade"
         value={dificuldade}
         onChange={(e) => setDificuldade(e.target.value)}
       >
