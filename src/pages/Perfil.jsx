@@ -35,7 +35,7 @@ export function Perfil() {
       }
     }
     carregar();
-  }, []);
+  }, [fetchAutenticado]);
 
   function baixarJson() {
     const blob = new Blob([JSON.stringify(dados, null, 2)], {

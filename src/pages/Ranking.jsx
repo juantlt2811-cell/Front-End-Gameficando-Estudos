@@ -45,7 +45,7 @@ export function Ranking() {
 
     carregarOfensiva();
     carregarMaterias();
-  }, []);
+  }, [fetchAutenticado]);
 
   async function carregarRankingMateria(idMateria) {
     setIdMateriaSelecionada(idMateria);

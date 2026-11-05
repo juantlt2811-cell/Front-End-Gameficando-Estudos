@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { useAuth } from "../context/AuthContext";
@@ -58,7 +58,7 @@ export function AtividadesMateria() {
   const [resultadoTeste, setResultadoTeste] = useState(null);
   const [testando, setTestando] = useState(false);
 
-  async function carregarAtividades() {
+  const carregarAtividades = useCallback(async () => {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
@@ -73,21 +73,21 @@ export function AtividadesMateria() {
     } finally {
       setCarregando(false);
     }
-  }
+  }, [idMateria, fetchAutenticado]);
 
-  async function carregarModulosLista() {
+  const carregarModulosLista = useCallback(async () => {
     try {
       const dados = await buscarModulos(idMateria, fetchAutenticado);
       setModulos(dados);
     } catch (e) {
       setErro(mensagemErro(e));
     }
-  }
+  }, [idMateria, fetchAutenticado]);
 
   useEffect(() => {
     carregarAtividades();
     carregarModulosLista();
-  }, [idMateria]);
+  }, [carregarAtividades, carregarModulosLista]);
 
   async function handleGerar(e) {
     e.preventDefault();

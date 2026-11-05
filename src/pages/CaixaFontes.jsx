@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../constants/api";
@@ -25,7 +25,7 @@ export function CaixaFontes() {
   const [idModuloArquivo, setIdModuloArquivo] = useState("");
   const [enviandoArquivo, setEnviandoArquivo] = useState(false);
 
-  async function carregarMateriais() {
+  const carregarMateriais = useCallback(async () => {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
@@ -40,21 +40,21 @@ export function CaixaFontes() {
     } finally {
       setCarregando(false);
     }
-  }
+  }, [idMateria, fetchAutenticado]);
 
-  async function carregarModulosLista() {
+  const carregarModulosLista = useCallback(async () => {
     try {
       const dados = await buscarModulos(idMateria, fetchAutenticado);
       setModulos(dados);
     } catch (e) {
       setErro(mensagemErro(e));
     }
-  }
+  }, [idMateria, fetchAutenticado]);
 
   useEffect(() => {
     carregarMateriais();
     carregarModulosLista();
-  }, [idMateria]);
+  }, [carregarMateriais, carregarModulosLista]);
 
   async function handleEnviarTexto(e) {
     e.preventDefault();

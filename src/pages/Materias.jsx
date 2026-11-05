@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ListaMaterias } from "../components/ListaMaterias";
 import { useAuth } from "../context/AuthContext";
@@ -16,7 +16,7 @@ export function Materias() {
   const [resultadosPesquisa, setResultadosPesquisa] = useState(null);
   const [pesquisando, setPesquisando] = useState(false);
 
-  async function carregarMaterias() {
+  const carregarMaterias = useCallback(async () => {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
@@ -29,11 +29,11 @@ export function Materias() {
     } finally {
       setCarregando(false);
     }
-  }
+  }, [fetchAutenticado]);
 
   useEffect(() => {
     carregarMaterias();
-  }, []);
+  }, [carregarMaterias]);
 
   async function handlePesquisar(e) {
     e.preventDefault();

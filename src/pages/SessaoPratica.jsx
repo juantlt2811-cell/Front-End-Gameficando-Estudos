@@ -54,7 +54,7 @@ export function SessaoPratica() {
       }
     }
     carregarModulosLista();
-  }, [idMateria]);
+  }, [idMateria, fetchAutenticado]);
 
   useEffect(() => {
     async function carregarConfirmacao() {
@@ -75,7 +75,7 @@ export function SessaoPratica() {
       }
     }
     carregarConfirmacao();
-  }, [idMateria, idModuloEscolhido, tamanhoEscolhido]);
+  }, [idMateria, idModuloEscolhido, tamanhoEscolhido, fetchAutenticado]);
 
   async function handleIniciar() {
     setErro(null);

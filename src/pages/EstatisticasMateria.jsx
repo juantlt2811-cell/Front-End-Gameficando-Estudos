@@ -30,7 +30,7 @@ export function EstatisticasMateria() {
       }
     }
     carregar();
-  }, [idMateria]);
+  }, [idMateria, fetchAutenticado]);
 
   return (
     <div className="App">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ListaMaterias } from "../components/ListaMaterias";
@@ -13,7 +13,7 @@ export function MinhasMaterias() {
   const [erro, setErro] = useState(null);
   const [materiaEditando, setMateriaEditando] = useState(null);
 
-  async function carregarMinhas() {
+  const carregarMinhas = useCallback(async () => {
     setCarregando(true);
     try {
       const resposta = await fetchAutenticado(
@@ -26,11 +26,11 @@ export function MinhasMaterias() {
     } finally {
       setCarregando(false);
     }
-  }
+  }, [fetchAutenticado]);
 
   useEffect(() => {
     carregarMinhas();
-  }, []);
+  }, [carregarMinhas]);
 
   async function handleExcluir(id) {
     if (!window.confirm("Tem certeza que quer excluir essa matéria?")) return;
