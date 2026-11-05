@@ -845,6 +845,7 @@ tr.linha-primeiro-lugar td:first-child {
 
 .form-novo-modulo {
   display: flex;
+  flex-direction: row;
   gap: 8px;
   max-width: 440px;
   margin: 0 0 16px;
@@ -866,6 +867,7 @@ tr.linha-primeiro-lugar td:first-child {
 
 .modulo-item {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
