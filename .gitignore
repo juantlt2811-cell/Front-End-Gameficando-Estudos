@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Variáveis de ambiente (VITE_* vão para o navegador: nunca colocar segredo nelas)
+.env
+.env.*
+!.env.example
